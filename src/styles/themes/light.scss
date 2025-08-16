@@ -1,0 +1,60 @@
+// 亮色主题 - 第二层：语义化变量定义
+// 这些变量才是组件中真正使用的变量
+
+// 导入颜色原子变量
+@use '../tokens/colors.scss';
+@use '../tokens/typography.scss';
+
+:root {
+  // === 色彩语义化变量 ===
+  // 主色调（引用基础令牌）
+  --color-primary: var(--blue-500);
+  --color-primary-light: var(--blue-400);
+  --color-primary-dark: var(--blue-700);
+  --color-primary-hover: var(--blue-600);
+
+  // 功能色（引用基础令牌）
+  --color-success: var(--green-500);
+  --color-warning: var(--orange-500);
+  --color-error: var(--red-500);
+  --color-info: var(--cyan-500);
+
+  // === 背景色语义化变量 ===
+  --bg-page: var(--gray-50); // 页面背景
+  --bg-container: var(--white); // 容器背景
+  --bg-elevated: var(--white); // 悬浮背景
+  --bg-overlay: rgba(0, 0, 0, 0.5); // 遮罩背景
+
+  // === 文字色语义化变量 ===
+  --text-primary: var(--gray-900); // 主要文字
+  --text-secondary: var(--gray-700); // 次要文字
+  --text-tertiary: var(--gray-500); // 辅助文字
+  --text-disabled: var(--gray-300); // 禁用文字
+  --text-inverse: var(--white); // 反色文字
+
+  // === 边框色语义化变量 ===
+  --border-light: var(--gray-200); // 浅边框
+  --border-medium: var(--gray-300); // 中等边框
+  --border-strong: var(--gray-500); // 深边框
+
+  // === 侧边栏专用变量 ===
+  --sidebar-bg: var(--white);
+  --sidebar-text: var(--gray-600);
+  --sidebar-text-active: var(--color-primary);
+  --sidebar-hover-bg: var(--gray-100);
+  --sidebar-active-bg: var(--blue-50);
+
+  // === 头部专用变量 ===
+  --header-bg: var(--white);
+  --header-text: var(--text-primary);
+  --header-border: var(--border-light);
+  --header-menu-bg: var(--white);
+  --header-menu-text: var(--gray-700);
+  --header-menu-hover-bg: var(--gray-100);
+
+  // === 阴影语义化变量 ===
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}

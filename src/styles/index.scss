@@ -1,0 +1,14 @@
+// 样式系统主入口文件
+// 简化版本，只保留核心功能
+
+// === 基础令牌 ===
+@use './tokens/colors.scss';
+@use './tokens/typography.scss';
+
+// === 变量和主题 ===
+@use './variables.scss';
+@use './themes/light.scss';
+@use './themes/dark.scss';
+
+// === 基础样式 ===
+@use './base/global.scss';

@@ -1,0 +1,60 @@
+// 暗色主题 - 第二层：重新定义语义化变量
+// 使用相同的语义化变量名，但指向不同的值
+
+// 导入颜色原子变量
+@use '../tokens/colors.scss';
+@use '../tokens/typography.scss';
+
+.dark {
+  // === 色彩语义化变量 ===
+  // 主色调（可以保持一致，也可以调整）
+  --color-primary: var(--blue-400); // 暗色下使用稍亮的蓝色
+  --color-primary-light: var(--blue-300);
+  --color-primary-dark: var(--blue-600);
+  --color-primary-hover: var(--blue-500);
+
+  // 功能色（通常保持一致）
+  --color-success: var(--green-500);
+  --color-warning: var(--orange-500);
+  --color-error: var(--red-500);
+  --color-info: var(--cyan-500);
+
+  // === 背景色语义化变量 ===
+  --bg-page: #0a0a0a; // 深黑色页面背景
+  --bg-container: #1a1a1a; // 深灰色容器背景
+  --bg-elevated: #2a2a2a; // 更亮的悬浮背景
+  --bg-overlay: rgba(0, 0, 0, 0.8); // 更深的遮罩
+
+  // === 文字色语义化变量 ===
+  --text-primary: var(--white); // 白色主要文字
+  --text-secondary: var(--gray-300); // 浅灰次要文字
+  --text-tertiary: var(--gray-500); // 中灰辅助文字
+  --text-disabled: var(--gray-600); // 深灰禁用文字
+  --text-inverse: var(--black); // 黑色反色文字
+
+  // === 边框色语义化变量 ===
+  --border-light: #2a2a2a; // 深色浅边框
+  --border-medium: #404040; // 深色中等边框
+  --border-strong: #606060; // 深色深边框
+
+  // === 侧边栏专用变量 ===
+  --sidebar-bg: #141414;
+  --sidebar-text: var(--gray-400);
+  --sidebar-text-active: var(--white);
+  --sidebar-hover-bg: #2a2a2a;
+  --sidebar-active-bg: var(--color-primary);
+
+  // === 头部专用变量 ===
+  --header-bg: #141414;
+  --header-text: var(--text-primary);
+  --header-border: var(--border-light);
+  --header-menu-bg: #141414;
+  --header-menu-text: var(--text-secondary);
+  --header-menu-hover-bg: #2a2a2a;
+
+  // === 阴影语义化变量 ===
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6);
+}
