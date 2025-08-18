@@ -1,6 +1,6 @@
 <script setup>
 import { useAppStore } from '@/stores/app'
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import { Menu, Fold, Sunny, Moon } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
 import { pageTitles } from '@/config/menu'
@@ -8,29 +8,37 @@ import { pageTitles } from '@/config/menu'
 const appStore = useAppStore()
 const route = useRoute()
 
+// 注入来自父组件的响应式数据和函数
+const isMobile = inject('isMobile', false)
+const toggleMobileSidebar = inject('toggleMobileSidebar', () => {})
+
 const handleCollapse = () => {
-  appStore.toggleCollapse()
+  if (isMobile.value) {
+    // 移动端：切换侧边栏显示/隐藏
+    toggleMobileSidebar()
+  } else {
+    // 桌面端：切换侧边栏展开/折叠
+    appStore.toggleCollapse()
+  }
 }
 
-// 菜单图标
+// 菜单图标 - 根据设备类型显示不同图标
 const menuIcon = computed(() => {
-  return appStore.isCollapse ? Menu : Fold
+  if (isMobile.value) {
+    return Menu // 移动端始终显示菜单图标
+  }
+  return appStore.isCollapse ? Menu : Fold // 桌面端根据折叠状态显示
 })
 
 // 主题相关 - 使用可写的计算属性
 const isDark = computed({
   get: () => appStore.isDark,
   set: (value) => {
-    // 只有当值真正改变时才触发切换
     if (value !== appStore.isDark) {
       appStore.toggleTheme()
     }
-  }
+  },
 })
-
-const toggleTheme = () => {
-  appStore.toggleTheme()
-}
 
 // 当前页面信息
 const current = computed(() => {
@@ -49,7 +57,7 @@ const current = computed(() => {
 <template>
   <div class="header">
     <div class="l-content">
-      <el-button size="medium" @click="handleCollapse">
+      <el-button size="default" @click="handleCollapse">
         <el-icon><component :is="menuIcon" /></el-icon>
       </el-button>
       <el-breadcrumb separator="/" class="bread">
@@ -107,12 +115,13 @@ const current = computed(() => {
     }
 
     .bread {
-      :deep(.el-breadcrumb__item) {
+      // 外部元素不需要 :deep()，因为它们有 scoped 属性
+      .el-breadcrumb__item {
         font-size: $font-size-normal;
         cursor: pointer;
       }
 
-      // 额外的保险措施 - 直接针对组件
+      // 内部元素需要 :deep()，因为它们没有 scoped 属性
       :deep(.el-breadcrumb__inner) {
         color: var(--header-text) !important;
 
@@ -137,9 +146,10 @@ const current = computed(() => {
 
     .el-button {
       color: var(--header-text);
+      margin-right: $spacing-md;
 
       &:hover {
-        color: var(--text-primary);
+        color: var(--color-primary);
       }
     }
   }

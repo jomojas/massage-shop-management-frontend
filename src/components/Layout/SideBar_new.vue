@@ -49,7 +49,6 @@ const handleMenu = (item: MenuItem) => {
   <div v-if="isMobile && visible" class="sidebar-overlay" @click="$emit('close')" />
 
   <!-- 侧边栏 -->
-  <!--用于区分桌面端的侧边栏折叠状态 width="actualCollapse"-->
   <el-aside
     :class="{
       sidebar: true,
@@ -107,13 +106,13 @@ const handleMenu = (item: MenuItem) => {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
   cursor: pointer;
-  transition: opacity $transition-slow ease;
+  transition: opacity 0.3s ease;
 }
 
 .sidebar {
   height: 100%;
   background-color: var(--sidebar-bg);
-  transition: all $transition-slow ease;
+  transition: all 0.3s ease;
 
   // 桌面端样式
   &.sidebar-desktop {
@@ -129,7 +128,6 @@ const handleMenu = (item: MenuItem) => {
     z-index: 1000;
     transform: translateX(-100%);
 
-    // 更具体的规则会覆盖上面的translateX,所以不使用translateX(100%)，而是translateX(0)
     &.sidebar-visible {
       transform: translateX(0);
     }
@@ -213,7 +211,7 @@ const handleMenu = (item: MenuItem) => {
   }
 }
 
-// 响应式设计(不起作用)
+// 响应式设计
 @media (max-width: 767.98px) {
   .sidebar {
     width: 200px !important;

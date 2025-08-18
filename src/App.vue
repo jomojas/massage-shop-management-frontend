@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MainLayout from './components/Layout/MainLayout.vue'
+import PageHeader from './components/PageHeader.vue'
 </script>
 
 <template>
