@@ -1,6 +1,7 @@
 import axios from 'axios'
 import config from '@/config'
 import { ElMessage } from 'element-plus'
+import type { AxiosRequestConfig } from 'axios'
 
 const request = axios.create({
   baseURL: config.apiBaseUrl,
@@ -25,14 +26,14 @@ request.interceptors.request.use(
     }
 
     // 3. 开发环境打印请求信息
-    if (import.meta.env.DEV) {
-      console.log(
-        '📤 发送请求:',
-        config.method?.toUpperCase(),
-        config.url,
-        config.data || config.params,
-      )
-    }
+    // if (import.meta.env.DEV) {
+    //   console.log(
+    //     '📤 发送请求:',
+    //     config.method?.toUpperCase(),
+    //     config.url,
+    //     config.data || config.params,
+    //   )
+    // }
 
     return config
   },
@@ -45,13 +46,14 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
   (response) => {
+    // console.log('响应拦截器:', response)
     // 成功响应处理
     const { code, data, message } = response.data
 
     // 开发环境打印响应信息
-    if (import.meta.env.DEV) {
-      console.log('📥 收到响应:', response.config.url, response.data)
-    }
+    // if (import.meta.env.DEV) {
+    //   console.log('📥 收到响应:', response.config.url, response.data)
+    // }
 
     // 根据业务状态码判断
     if (code === 200 || code === 0) {
@@ -88,5 +90,10 @@ request.interceptors.response.use(
     return Promise.reject(error)
   },
 )
+
+// 类型安全的请求方法
+export function apiRequest<T = any>(config: AxiosRequestConfig): Promise<T> {
+  return request(config) as Promise<T>
+}
 
 export default request

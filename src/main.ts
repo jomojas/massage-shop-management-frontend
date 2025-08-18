@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import VChart from 'vue-echarts' // 引入 ECharts 组件
 
 // 引入样式系统
 import './styles/index.scss'
@@ -22,6 +23,7 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 app.use(ElementPlus)
+app.component('v-chart', VChart) // 注册 ECharts 组件
 
 // 初始化主题
 const appStore = useAppStore()

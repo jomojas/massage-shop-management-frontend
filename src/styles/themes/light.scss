@@ -52,6 +52,10 @@
   --header-menu-text: var(--gray-700);
   --header-menu-hover-bg: var(--gray-100);
 
+  // ===首页卡片专用变量 ===
+  --dashcard-bg: var(--white);
+  --dashcard-text: var(--text-primary);
+
   // === 阴影语义化变量 ===
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
