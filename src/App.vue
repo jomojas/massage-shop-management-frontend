@@ -23,4 +23,48 @@ body {
 #app {
   height: 100vh;
 }
+
+/* 全局样式，任何共享类名的组件会使用该样式 */
+.el-dialog {
+  background-color: var(--member-management-bg) !important;
+  color: var(--member-management-text) !important;
+
+  .el-dialog__title {
+    color: var(--member-management-text) !important;
+  }
+
+  .el-form-item__label {
+    color: var(--member-management-text) !important;
+  }
+
+  .el-input__wrapper {
+    background-color: var(--member-management-bg) !important;
+    .el-input__inner {
+      color: var(--member-management-text) !important;
+    }
+  }
+
+  .el-radio-button__inner {
+    background-color: var(--member-management-bg);
+    color: var(--member-management-text);
+  }
+}
+
+.el-pagination {
+  .btn-prev,
+  .btn-next,
+  .el-pager li {
+    background-color: var(--member-management-pager-bg) !important;
+    color: var(--member-management-pager-text) !important;
+
+    &:hover {
+      color: var(--el-color-primary) !important;
+    }
+
+    &.is-active {
+      background-color: var(--el-color-primary) !important;
+      color: white !important;
+    }
+  }
+}
 </style>

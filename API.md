@@ -176,18 +176,18 @@
   "code": 200,
   "message": "success",
   "data": {
-    "totalMembers": 35,
-    "totalPages": 4,
+    "totalRecords": 6,
+    "totalPages": 1,
     "currentPage": 1,
-    "members": [
+    "list": [
       {
-        "recordId": 1001,
-        "memberId": 1,
-        "memberName": "张三",
-        "memberPhone": "13800000000",
-        "amount": 88,
-        "rechargeTime": "2025-08-03 14:55:23",
-        "remark": "微信充值"
+        "id": 15,
+        "memberId": 23,
+        "memberName": "成风",
+        "memberPhone": "13810840603",
+        "amount": 300.0,
+        "rechargeTime": "2025-08-07T20:41:57",
+        "remark": "第一次充值成为会员 首次充值成为会员"
       }
     ]
   }

@@ -51,13 +51,17 @@ request.interceptors.response.use(
     const { code, data, message } = response.data
 
     // 开发环境打印响应信息
-    // if (import.meta.env.DEV) {
-    //   console.log('📥 收到响应:', response.config.url, response.data)
-    // }
+    if (import.meta.env.DEV) {
+      console.log('📥 收到响应:', response.config.url, response.data)
+    }
 
     // 根据业务状态码判断
     if (code === 200 || code === 0) {
-      return data // 直接返回业务数据
+      // 如果 data 字段不存在，返回 true 或 message
+      if (typeof data === 'undefined') {
+        return true // 或 return message
+      }
+      return data
     } else {
       // 业务错误
       ElMessage.error(message || '请求失败')
