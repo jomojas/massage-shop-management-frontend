@@ -13,25 +13,22 @@ const rules = {
     { required: true, message: '电话是必填项', trigger: 'blur' },
     { pattern: /^1\d{10}$/, message: '请输入有效手机号', trigger: 'blur' },
   ],
-  balance: [
-    { required: true, message: '充值金额是必填项', trigger: 'blur' },
-    { type: 'number', message: '充值金额必须是数字', trigger: 'blur' },
+  commission: [
+    { required: true, message: '提成比例是必填项', trigger: 'blur' },
+    { type: 'number', min: 0, max: 1, message: '提成比例范围为0~1', trigger: 'blur' },
   ],
-  description: [{ required: false, message: '描述信息是必填项', trigger: 'blur' }],
 }
 
-const formAddMember = reactive({
+const formAddStaff = reactive({
   name: '',
   phone: '',
-  balance: '',
-  description: '',
+  commission: null,
 })
 
 const resetForm = () => {
-  formAddMember.name = ''
-  formAddMember.phone = ''
-  formAddMember.balance = ''
-  formAddMember.description = ''
+  formAddStaff.name = ''
+  formAddStaff.phone = ''
+  formAddStaff.commission = null
 }
 const handleCancel = () => {
   resetForm()
@@ -44,8 +41,7 @@ const handleClose = () => {
 const onSubmit = () => {
   formRef.value?.validate((valid) => {
     if (valid) {
-      // 将表单数据传递给父组件
-      emit('submit', { ...formAddMember })
+      emit('submit', { ...formAddStaff })
       resetForm()
       emit('update:modelValue', false)
     } else {
@@ -64,22 +60,27 @@ const isMobile = inject('isMobile', false)
 <template>
   <el-dialog
     v-model="props.modelValue"
-    title="添加会员"
+    title="添加员工"
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"
   >
-    <el-form :model="formAddMember" :rules="rules" ref="formRef">
+    <el-form :model="formAddStaff" :rules="rules" ref="formRef">
       <el-form-item label="姓名" prop="name">
-        <el-input v-model="formAddMember.name" placeholder="输入姓名" />
+        <el-input v-model="formAddStaff.name" placeholder="输入姓名" />
       </el-form-item>
       <el-form-item label="电话" prop="phone">
-        <el-input v-model.number="formAddMember.phone" placeholder="输入电话" />
+        <el-input v-model="formAddStaff.phone" placeholder="输入电话" />
       </el-form-item>
-      <el-form-item label="金额" prop="balance">
-        <el-input v-model.number="formAddMember.balance" placeholder="输入金额" />
-      </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input v-model="formAddMember.description" placeholder="输入描述信息" />
+      <el-form-item label="提成比例" prop="commission">
+        <el-input-number
+          v-model="formAddStaff.commission"
+          :min="0"
+          :max="1"
+          :step="0.01"
+          :precision="2"
+          placeholder="输入0~1之间的小数"
+          style="width: 100%"
+        />
       </el-form-item>
       <el-form-item class="buttons">
         <el-button type="primary" @click="handleCancel">取消</el-button>
@@ -91,11 +92,6 @@ const isMobile = inject('isMobile', false)
 
 <style lang="scss" scoped>
 .el-form {
-  .radio-groups {
-    .sort-options {
-      margin-right: 30px;
-    }
-  }
   :deep(.buttons .el-form-item__content) {
     display: flex;
     justify-content: flex-end;

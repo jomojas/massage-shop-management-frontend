@@ -1,82 +1,74 @@
 <script setup>
-import { Search } from '@element-plus/icons-vue'
-import AddMemberDialog from './AddMemberDialog.vue'
-import EditMemberDialog from './EditMemberDialog.vue'
-import MemberFilter from './MemberFilter.vue'
-import RechargeDialog from './RechargeDialog.vue'
-import MemberTimeLine from './MemberTimeLine.vue'
 import { ref, onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { Search } from '@element-plus/icons-vue'
+import AddStaffDialog from './AddStaffDialog.vue'
+import StaffFilter from './StaffFilter.vue'
+import EditStaffDialog from './EditStaffDialog.vue'
+import StaffTimeLine from './StaffTimeLine.vue'
+// 假设你有如下API方法
 import {
-  fetchUndeletedMembers,
-  fetchDeletedMembers,
-  deleteMember,
-  rechargeMember,
-  editMember,
-  addMember,
-  restoreMember,
-} from '@/api/modules/member'
-import { ElMessage } from 'element-plus'
-import { ElMessageBox } from 'element-plus'
+  fetchUndeletedStaffs,
+  fetchDeletedStaffs,
+  deleteStaff,
+  editStaff,
+  addStaff,
+  restoreStaff,
+} from '@/api/modules/staff'
+
 // 页面加载时自动请求一次数据
 onMounted(() => {
-  fetchMembers()
+  fetchStaffs()
 })
 
-const showFilterDialog = ref(false)
+// 弹窗控制
 const showAddDialog = ref(false)
 const showEditDialog = ref(false)
-const showRechargeDialog = ref(false)
-const showMemberTimeLine = ref(false)
+const showFilterDialog = ref(false)
+const showStaffTimeLine = ref(false)
 
-const memberStatus = ref('undeleted')
+// 状态与数据
+const staffStatus = ref('undeleted')
 const searchKeyword = ref('')
 const tableData = ref([])
 const currentFilters = ref({})
 const currentPage = ref(1)
 const pageSize = ref(8)
 const total = ref(0)
-// 排序字段和顺序
 const sortBy = ref('')
 const orderType = ref('')
 
-// 用于存储当前操作的时间线会员ID
-const currentTimelineMemberId = ref(null)
-// 用于存储当前操作的时间线会员姓名
-const currentTimelineMemberName = ref('')
+// 当前操作员工
+const currentStaffId = ref(null)
+const currentEditStaff = ref({})
+// 当前操作时间线员工ID和姓名
+const currentTimelineStaffId = ref(null)
+const currentTimelineStaffName = ref('')
 
-// 用于存储当前操作的会员ID
-const currentMemberId = ref(null)
-// 用于存储当前编辑的会员数据
-const currentEditMember = ref({})
-
-// 查询函数，合并filters、分页参数，根据memberStatus调用不同接口
-const fetchMembers = async (extra = {}) => {
+// 查询员工
+const fetchStaffs = async (extra = {}) => {
   const params = {
     ...currentFilters.value,
     page: currentPage.value,
-    size: pageSize.value,
+    page_size: pageSize.value,
     ...extra,
   }
-  // console.log('Fetching members with params:', params)
   let res
-  if (memberStatus.value === 'undeleted') {
-    res = await fetchUndeletedMembers(params)
+  if (staffStatus.value === 'undeleted') {
+    res = await fetchUndeletedStaffs(params)
   } else {
-    res = await fetchDeletedMembers(params)
+    res = await fetchDeletedStaffs(params)
   }
-  tableData.value = res.members
-  total.value = res.totalMembers || 0
+  tableData.value = res.employees
+  total.value = res.totalEmployees || 0
 }
 
-// 解决sortBy查询是created_time但是返回的会员信息中却是createdTime的问题
+// 排序字段映射
 const sortFieldMap = {
-  createdTime: 'created_time',
   name: 'name',
-  balance: 'balance',
+  commission: 'commission',
 }
-// 表头排序事件
 const handleSortChange = ({ prop, order }) => {
-  // 将createdTime转换为created_time
   const sortByParam = sortFieldMap[prop] || prop
   if (!order) {
     sortBy.value = ''
@@ -87,146 +79,129 @@ const handleSortChange = ({ prop, order }) => {
     orderType.value = order === 'ascending' ? 'asc' : 'desc'
     currentFilters.value = { ...currentFilters.value, sortBy: sortBy.value, order: orderType.value }
   }
-  // console.log('Sorting by:', sortBy.value, 'Order:', orderType.value)
   currentPage.value = 1
-  fetchMembers()
+  fetchStaffs()
 }
 
-// 高级筛选弹窗回调
+// 高级筛选
 const handleFilterSearch = (filters) => {
   currentFilters.value = { ...filters }
   currentPage.value = 1
-  fetchMembers()
+  fetchStaffs()
 }
 
-// 会员充值回调
-const handleRecharge = async ({ amount, remark }) => {
-  // 这里假设 currentMemberId 是你要充值的会员id
-  const res = await rechargeMember(currentMemberId.value, { amount, remark })
-  if (res === true || typeof res === 'string') {
-    ElMessage.success('充值成功')
-    fetchMembers()
-  }
-}
-
-// 添加会员回调
-const handleAdd = async (memberData) => {
-  // 这里假设 memberData 是添加的会员数据
-  const res = await addMember(memberData)
+// 添加员工
+const handleAdd = async (staffData) => {
+  const res = await addStaff(staffData)
   if (res === true || typeof res === 'string') {
     ElMessage.success('添加成功')
-    fetchMembers()
+    fetchStaffs()
   }
 }
 
-// 编辑会员回调
-const handleEdit = async (memberData) => {
-  // 这里假设 memberData 是编辑后的会员数据
-  const res = await editMember(currentMemberId.value, memberData)
+// 编辑员工
+const handleEdit = async (staffData) => {
+  const res = await editStaff(currentStaffId.value, staffData)
   if (res === true || typeof res === 'string') {
     ElMessage.success('编辑成功')
-    fetchMembers()
+    fetchStaffs()
   }
+}
+
+// 删除员工
+const handleDeleteBtn = async (id) => {
+  try {
+    await ElMessageBox.confirm('确定删除该员工吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+    const res = await deleteStaff(id)
+    if (res === true || typeof res === 'string') {
+      ElMessage.success('删除成功')
+      fetchStaffs()
+    }
+  } catch (e) {}
+}
+
+// 恢复员工
+const handleRestoreBtn = async (id) => {
+  try {
+    await ElMessageBox.confirm('确定恢复该员工吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+    const res = await restoreStaff(id)
+    if (res === true || typeof res === 'string') {
+      ElMessage.success('恢复成功')
+      fetchStaffs()
+    }
+  } catch (e) {}
+}
+
+// 编辑按钮
+const handleEditBtn = (staff) => {
+  currentEditStaff.value = { ...staff }
+  currentStaffId.value = staff.id
+  showEditDialog.value = true
 }
 
 // 状态切换
 const handleStatusChange = () => {
   currentPage.value = 1
-  fetchMembers()
+  fetchStaffs()
 }
 
-// 分页回调
+// 分页
 const handlePageChange = (page) => {
   currentPage.value = page
-  fetchMembers()
+  fetchStaffs()
 }
 
-// 仅通过keyword搜索
+// 简单搜索
 const handleSimpleSearch = () => {
   currentFilters.value = { keyword: searchKeyword.value }
   currentPage.value = 1
-  fetchMembers()
+  fetchStaffs()
 }
 
-const handleFilterDialog = () => {
-  showFilterDialog.value = true
+// 处理行点击事件，展示员工本月服务时间线
+const handleRowClick = (row) => {
+  currentTimelineStaffId.value = row.id
+  currentTimelineStaffName.value = row.name
+  showStaffTimeLine.value = true
 }
-const handleAddMember = () => {
+
+// 打开弹窗
+const handleAddStaff = () => {
   showAddDialog.value = true
 }
-const handleEditBtn = (member) => {
-  currentEditMember.value = { ...member } // 复制当前行数据
-  currentMemberId.value = member.id // 设置当前操作的会员ID
-  showEditDialog.value = true
-}
-
-const handleDeleteBtn = async (id) => {
-  try {
-    await ElMessageBox.confirm('确定删除该会员吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    })
-    const res = await deleteMember(id)
-    if (res === true || typeof res === 'string') {
-      ElMessage.success('删除成功')
-      fetchMembers()
-    }
-  } catch (e) {
-    // 用户取消，无需处理
-  }
-}
-const handleRestoreBtn = async (id) => {
-  try {
-    await ElMessageBox.confirm('确定恢复该会员吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    })
-    const res = await restoreMember(id)
-    if (res === true || typeof res === 'string') {
-      ElMessage.success('恢复成功')
-      fetchMembers()
-    }
-  } catch (e) {
-    // 用户取消，无需处理
-  }
-}
-
-// 处理行点击事件，展示会员本月消费时间线
-const handleRowClick = (row) => {
-  currentTimelineMemberId.value = row.id
-  currentTimelineMemberName.value = row.name
-  showMemberTimeLine.value = true
-}
-
-// 充值按钮点击事件
-const handleChargeBtn = (id) => {
-  currentMemberId.value = id
-  showRechargeDialog.value = true
+const handleFilterDialog = () => {
+  showFilterDialog.value = true
 }
 </script>
 
 <template>
-  <MemberFilter v-model="showFilterDialog" @search="handleFilterSearch" />
-  <AddMemberDialog v-model="showAddDialog" @submit="handleAdd" />
-  <EditMemberDialog v-model="showEditDialog" :member="currentEditMember" @submit="handleEdit" />
-  <RechargeDialog v-model="showRechargeDialog" @submit="handleRecharge" />
-  <MemberTimeLine
-    v-model="showMemberTimeLine"
-    :memberId="currentTimelineMemberId"
-    :memberName="currentTimelineMemberName"
+  <!-- 这里可引入 StaffFilter、AddStaffDialog、EditStaffDialog 组件 -->
+  <StaffFilter v-model="showFilterDialog" @search="handleFilterSearch" />
+  <AddStaffDialog v-model="showAddDialog" @submit="handleAdd" />
+  <EditStaffDialog v-model="showEditDialog" :staff="currentEditStaff" @submit="handleEdit" />
+  <StaffTimeLine
+    v-model="showStaffTimeLine"
+    :staffId="currentTimelineStaffId"
+    :staffName="currentTimelineStaffName"
   />
 
   <el-form>
     <el-form-item>
-      <el-radio-group v-model="memberStatus" @change="handleStatusChange">
+      <el-radio-group v-model="staffStatus" @change="handleStatusChange">
         <el-radio-button label="未删除" value="undeleted" />
         <el-radio-button label="已删除" value="deleted" />
       </el-radio-group>
     </el-form-item>
-    <el-form-item class="add-member">
-      <el-button type="primary" @click="handleAddMember">添加会员</el-button>
+    <el-form-item class="add-staff">
+      <el-button type="primary" @click="handleAddStaff">添加员工</el-button>
     </el-form-item>
     <el-form-item class="input-search">
       <el-input
@@ -240,7 +215,7 @@ const handleChargeBtn = (id) => {
     <el-form-item class="search-btn">
       <el-button type="primary" @click="handleSimpleSearch">查询</el-button>
     </el-form-item>
-    <el-form-item classs="advanced-search">
+    <el-form-item class="advanced-search">
       <el-button type="primary" @click="handleFilterDialog">高级查询</el-button>
     </el-form-item>
   </el-form>
@@ -252,14 +227,7 @@ const handleChargeBtn = (id) => {
       @sort-change="handleSortChange"
       @row-click="handleRowClick"
     >
-      <el-table-column
-        fixed
-        prop="createdTime"
-        label="创建时间"
-        sortable="custom"
-        :sort-orders="['ascending', 'descending']"
-        width="160"
-      />
+      <el-table-column fixed prop="createTime" label="创建时间" width="160" />
       <el-table-column
         prop="name"
         label="姓名"
@@ -269,19 +237,18 @@ const handleChargeBtn = (id) => {
       />
       <el-table-column prop="phone" label="电话" width="120" />
       <el-table-column
-        prop="balance"
-        label="余额"
+        prop="commission"
+        label="提成比例"
         sortable="custom"
         :sort-orders="['ascending', 'descending']"
         width="120"
+        :formatter="(row) => (row.commission * 100).toFixed(2) + '%'"
       />
-      <el-table-column prop="description" label="描述信息" width="400" />
-      <el-table-column fixed="right" label="操作" min-width="230">
+      <el-table-column fixed="right" label="操作" min-width="200">
         <template #default="{ row }">
-          <template v-if="memberStatus === 'undeleted'">
+          <template v-if="staffStatus === 'undeleted'">
             <el-button type="danger" @click.stop="handleDeleteBtn(row.id)">删除</el-button>
             <el-button type="primary" @click.stop="handleEditBtn(row)">编辑</el-button>
-            <el-button type="success" @click.stop="handleChargeBtn(row.id)">充值</el-button>
           </template>
           <template v-else>
             <el-button type="warning" @click.stop="handleRestoreBtn(row.id)">恢复</el-button>

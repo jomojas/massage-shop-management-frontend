@@ -1392,7 +1392,7 @@ GET /api/logs?module=MEMBER&operation=CREATE&page=1&size=10
 }
 ```
 
-## 获取每位员工的服务收益变化折线图和对比饼图数据(week/month:day, year:month, all:month) period 默认 week(前端下拉框默认给 week,不可给空值)
+## 获取每位员工的服务收益变化折线图和对比饼图数据(week/month:day, year:month, all:month) period 默认 week(前端默认给 week,不可给空值)
 
 - url: <mark>GET /api/stats/staff-income-trend
 - 请求参数：
@@ -1556,14 +1556,16 @@ GET /api/logs?module=MEMBER&operation=CREATE&page=1&size=10
       "staff_name": "李师傅",
       "total_salary": 1160.0,
       "year_salary": 1160.0,
-      "month_salary": 1160.0
+      "month_salary": 1160.0,
+      "week_salary": 1160.0
     },
     {
       "staff_id": 3,
       "staff_name": "刘师傅",
       "total_salary": 682.0,
       "year_salary": 682.0,
-      "month_salary": 682.0
+      "month_salary": 682.0,
+      "week_salary": 682.0
     }
   ]
 }

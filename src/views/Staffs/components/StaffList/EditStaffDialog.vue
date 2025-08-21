@@ -2,8 +2,8 @@
 import { defineProps, defineEmits, ref, inject, reactive, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-const props = defineProps({ modelValue: Boolean, member: Object })
-const emit = defineEmits(['update:modelValue'])
+const props = defineProps({ modelValue: Boolean, staff: Object })
+const emit = defineEmits(['update:modelValue', 'submit'])
 
 const formRef = ref(null)
 
@@ -13,34 +13,32 @@ const rules = {
     { required: true, message: '电话是必填项', trigger: 'blur' },
     { pattern: /^1\d{10}$/, message: '请输入有效手机号', trigger: 'blur' },
   ],
-  balance: [
-    { required: true, message: '充值金额是必填项', trigger: 'blur' },
-    { type: 'number', message: '充值金额必须是数字', trigger: 'blur' },
+  commission: [
+    { required: true, message: '提成比例是必填项', trigger: 'blur' },
+    { type: 'number', min: 0, max: 1, message: '提成比例范围为0~1', trigger: 'blur' },
   ],
-  description: [{ required: false, message: '描述信息是必填项', trigger: 'blur' }],
 }
 
-const formEditMember = reactive({
+const formEditStaff = reactive({
   name: '',
   phone: '',
-  balance: '',
-  description: '',
+  commission: null,
 })
+
 watch(
-  () => props.member,
+  () => props.staff,
   (val) => {
     if (val) {
-      Object.assign(formEditMember, val)
+      Object.assign(formEditStaff, val)
     }
   },
   { immediate: true },
 )
 
 const resetForm = () => {
-  formEditMember.name = ''
-  formEditMember.phone = ''
-  formEditMember.balance = ''
-  formEditMember.description = ''
+  formEditStaff.name = ''
+  formEditStaff.phone = ''
+  formEditStaff.commission = null
 }
 const handleCancel = () => {
   resetForm()
@@ -54,21 +52,15 @@ const onSubmit = () => {
   formRef.value?.validate(async (valid) => {
     if (valid) {
       try {
-        await ElMessageBox.confirm(
-          '编辑会员信息可能导致余额等数据不一致，是否确定要保存修改？',
-          '提示',
-          {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-          },
-        )
-        // 用户点击“确定”
-        emit('submit', { ...formEditMember })
+        await ElMessageBox.confirm('是否确定要保存修改？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+        emit('submit', { ...formEditStaff })
         resetForm()
         emit('update:modelValue', false)
       } catch (e) {
-        // 用户点击“取消”或关闭弹窗
         resetForm()
         emit('update:modelValue', false)
       }
@@ -88,22 +80,27 @@ const isMobile = inject('isMobile', false)
 <template>
   <el-dialog
     v-model="props.modelValue"
-    title="编辑会员信息"
+    title="编辑员工信息"
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"
   >
-    <el-form :model="formEditMember" :rules="rules" ref="formRef">
+    <el-form :model="formEditStaff" :rules="rules" ref="formRef">
       <el-form-item label="姓名" prop="name">
-        <el-input v-model="formEditMember.name" placeholder="输入姓名" />
+        <el-input v-model="formEditStaff.name" placeholder="输入姓名" />
       </el-form-item>
       <el-form-item label="电话" prop="phone">
-        <el-input v-model="formEditMember.phone" placeholder="输入电话" />
+        <el-input v-model="formEditStaff.phone" placeholder="输入电话" />
       </el-form-item>
-      <el-form-item label="金额" prop="balance">
-        <el-input v-model.number="formEditMember.balance" placeholder="输入金额" />
-      </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input v-model="formEditMember.description" placeholder="输入描述信息" />
+      <el-form-item label="提成比例" prop="commission">
+        <el-input-number
+          v-model="formEditStaff.commission"
+          :min="0"
+          :max="1"
+          :step="0.01"
+          :precision="2"
+          placeholder="输入0~1之间的小数"
+          style="width: 100%"
+        />
       </el-form-item>
       <el-form-item class="buttons">
         <el-button type="primary" @click="handleCancel">取消</el-button>
@@ -113,4 +110,12 @@ const isMobile = inject('isMobile', false)
   </el-dialog>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.el-form {
+  :deep(.buttons .el-form-item__content) {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+  }
+}
+</style>

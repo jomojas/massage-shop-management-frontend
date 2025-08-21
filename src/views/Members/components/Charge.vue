@@ -5,7 +5,6 @@ import { Edit, Search } from '@element-plus/icons-vue'
 import ChargeFilter from './ChargeFilter.vue'
 import EditChargeDialog from './EditChargeDialog.vue'
 import { fetchRechargeRecords, editCharge } from '@/api/modules/member'
-import { pa } from 'element-plus/es/locales.mjs'
 // 页面加载时自动请求一次数据
 onMounted(() => {
   fetchCharges()
@@ -206,9 +205,6 @@ const handleFilterDialog = () => {
     width: 100%;
     height: 430px;
     background-color: var(--member-management-bg);
-    :deep(.el-table__border) {
-      color: var(--member-management-border);
-    }
 
     :deep(.el-table__cell) {
       background-color: var(--member-management-bg) !important;

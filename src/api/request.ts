@@ -52,7 +52,7 @@ request.interceptors.response.use(
 
     // 开发环境打印响应信息
     if (import.meta.env.DEV) {
-      console.log('📥 收到响应:', response.config.url, response.data)
+      // console.log('📥 收到响应:', response.config.url, response.data)
     }
 
     // 根据业务状态码判断

@@ -62,6 +62,11 @@
   --member-management-pager-bg: var(--bg-page);
   --member-management-pager-text: var(--text-primary);
 
+  // === 员工管理模块专用变量 ===
+  --staff-management-bg: var(--white);
+  --staff-management-text: var(--text-primary);
+  --staff-management-dropdown-hover: var(--bg-page);
+
   // === 阴影语义化变量 ===
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
