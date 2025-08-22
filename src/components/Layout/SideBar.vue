@@ -57,7 +57,7 @@ const handleMenu = (item: MenuItem) => {
       'sidebar-desktop': !isMobile,
       'sidebar-visible': visible,
     }"
-    :width="actualCollapse ? '60px' : '200px'"
+    :width="actualCollapse ? '60px' : '180px'"
     :collapse-transition="true"
   >
     <!-- Logo 区域 -->
@@ -113,7 +113,12 @@ const handleMenu = (item: MenuItem) => {
 .sidebar {
   height: 100%;
   background-color: var(--sidebar-bg);
-  transition: all $transition-slow ease;
+  transition:
+    background-color 0s ease,
+    width $transition-slow ease,
+    left $transition-slow ease,
+    right $transition-slow ease,
+    transform $transition-slow ease;
 
   // 桌面端样式
   &.sidebar-desktop {

@@ -164,7 +164,7 @@ const handleFilterDialog = () => {
       <el-table-column prop="remark" label="描述信息" width="400" />
       <el-table-column fixed="right" label="操作" min-width="150">
         <template #default="{ row }">
-          <el-button type="primary" @click="handleEditBtn(row)">编辑</el-button>
+          <el-button type="primary" link @click="handleEditBtn(row)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -200,10 +200,10 @@ const handleFilterDialog = () => {
 
 .table-wrapper {
   position: relative;
-  height: 480px;
+  height: 420px;
   .el-table {
     width: 100%;
-    height: 430px;
+    height: 370px;
     background-color: var(--member-management-bg);
 
     :deep(.el-table__cell) {

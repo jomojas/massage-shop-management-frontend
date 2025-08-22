@@ -247,11 +247,11 @@ const handleFilterDialog = () => {
       <el-table-column fixed="right" label="操作" min-width="200">
         <template #default="{ row }">
           <template v-if="staffStatus === 'undeleted'">
-            <el-button type="danger" @click.stop="handleDeleteBtn(row.id)">删除</el-button>
-            <el-button type="primary" @click.stop="handleEditBtn(row)">编辑</el-button>
+            <el-button type="danger" link @click.stop="handleDeleteBtn(row.id)">删除</el-button>
+            <el-button type="primary" link @click.stop="handleEditBtn(row)">编辑</el-button>
           </template>
           <template v-else>
-            <el-button type="warning" @click.stop="handleRestoreBtn(row.id)">恢复</el-button>
+            <el-button type="warning" link @click.stop="handleRestoreBtn(row.id)">恢复</el-button>
           </template>
         </template>
       </el-table-column>
@@ -285,7 +285,7 @@ const handleFilterDialog = () => {
   }
 
   .input-search {
-    width: 50%;
+    width: 30%;
     background-color: var(--member-management-bg);
 
     :deep(.el-input__wrapper) {
@@ -296,10 +296,10 @@ const handleFilterDialog = () => {
 
 .table-wrapper {
   position: relative;
-  height: 480px;
+  height: 410px;
   .el-table {
     width: 100%;
-    height: 430px;
+    height: 360px;
     background-color: var(--member-management-bg);
     :deep(.el-table__border) {
       color: var(--member-management-border);

@@ -1,9 +1,13 @@
 <script setup>
 import { useStaffStatsStore } from '@/stores/staffs/staffStats'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const staffStatsStore = useStaffStatsStore()
-const range = ref('week')
+// 直接用 pinia 的 timeRange，保证和全局同步
+const range = computed({
+  get: () => staffStatsStore.timeRange,
+  set: (val) => staffStatsStore.setTimeRange(val),
+})
 
 const handleTimeChange = (range) => {
   staffStatsStore.setTimeRange(range) // 自动触发所有数据更新

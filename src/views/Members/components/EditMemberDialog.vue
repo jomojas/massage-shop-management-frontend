@@ -92,7 +92,13 @@ const isMobile = inject('isMobile', false)
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"
   >
-    <el-form :model="formEditMember" :rules="rules" ref="formRef">
+    <el-form
+      :model="formEditMember"
+      :rules="rules"
+      ref="formRef"
+      label-position="right"
+      label-width="50px"
+    >
       <el-form-item label="姓名" prop="name">
         <el-input v-model="formEditMember.name" placeholder="输入姓名" />
       </el-form-item>

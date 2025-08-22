@@ -1,9 +1,13 @@
 <script setup>
 import { useDashboardStore } from '@/stores/dashboard'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const dashboardStore = useDashboardStore()
-const range = ref('week')
+// 直接用 pinia 的 timeRange，保证和全局同步
+const range = computed({
+  get: () => dashboardStore.timeRange,
+  set: (val) => dashboardStore.setTimeRange(val),
+})
 
 const handleTimeChange = (range) => {
   dashboardStore.setTimeRange(range) // 自动触发所有数据更新
@@ -32,6 +36,9 @@ const handleTimeChange = (range) => {
     font-size: $font-size-normal;
     background-color: var(--dashcard-bg);
     color: var(--dashcard-text);
+    transition:
+      background-color 0s,
+      ease;
   }
 }
 </style>

@@ -1,9 +1,19 @@
 <script setup>
+import { onMounted, onActivated } from 'vue'
 import ConsumePie from './components/ConsumePie.vue'
 import LineChart from './components/LineChart.vue'
 import ProjectPie from './components/ProjectPie.vue'
 import StatsDisplayer from './components/StatsDisplayer.vue'
 import TimeSelector from './components/TimeSelector.vue'
+import { useDashboardStore } from '@/stores/dashboard'
+
+const dashboardStore = useDashboardStore()
+onMounted(() => {
+  dashboardStore.fetchAllData() // 初始加载数据
+})
+onActivated(() => {
+  dashboardStore.fetchAllData()
+})
 </script>
 
 <template>

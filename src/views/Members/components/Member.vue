@@ -240,7 +240,7 @@ const handleChargeBtn = (id) => {
     <el-form-item class="search-btn">
       <el-button type="primary" @click="handleSimpleSearch">查询</el-button>
     </el-form-item>
-    <el-form-item classs="advanced-search">
+    <el-form-item class="advanced-search">
       <el-button type="primary" @click="handleFilterDialog">高级查询</el-button>
     </el-form-item>
   </el-form>
@@ -279,12 +279,12 @@ const handleChargeBtn = (id) => {
       <el-table-column fixed="right" label="操作" min-width="230">
         <template #default="{ row }">
           <template v-if="memberStatus === 'undeleted'">
-            <el-button type="danger" @click.stop="handleDeleteBtn(row.id)">删除</el-button>
-            <el-button type="primary" @click.stop="handleEditBtn(row)">编辑</el-button>
-            <el-button type="success" @click.stop="handleChargeBtn(row.id)">充值</el-button>
+            <el-button type="danger" link @click.stop="handleDeleteBtn(row.id)">删除</el-button>
+            <el-button type="primary" link @click.stop="handleEditBtn(row)">编辑</el-button>
+            <el-button type="success" link @click.stop="handleChargeBtn(row.id)">充值</el-button>
           </template>
           <template v-else>
-            <el-button type="warning" @click.stop="handleRestoreBtn(row.id)">恢复</el-button>
+            <el-button type="warning" link @click.stop="handleRestoreBtn(row.id)">恢复</el-button>
           </template>
         </template>
       </el-table-column>
@@ -318,7 +318,7 @@ const handleChargeBtn = (id) => {
   }
 
   .input-search {
-    width: 50%;
+    width: 30%;
     background-color: var(--member-management-bg);
 
     :deep(.el-input__wrapper) {
@@ -329,10 +329,10 @@ const handleChargeBtn = (id) => {
 
 .table-wrapper {
   position: relative;
-  height: 480px;
+  height: 420px;
   .el-table {
     width: 100%;
-    height: 430px;
+    height: 370px;
     background-color: var(--member-management-bg);
     :deep(.el-table__border) {
       color: var(--member-management-border);

@@ -173,7 +173,7 @@ const handleSortChange = ({ prop, order }) => {
 
 .table-wrapper {
   position: relative;
-  height: 420px;
+  height: 410px;
   .el-table {
     width: 100%;
     height: 360px;

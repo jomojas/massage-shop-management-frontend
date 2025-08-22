@@ -87,7 +87,13 @@ const isMobile = inject('isMobile', false)
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"
   >
-    <el-form :model="formEditCharge" :rules="rules" ref="formRef">
+    <el-form
+      :model="formEditCharge"
+      :rules="rules"
+      ref="formRef"
+      label-position="right"
+      label-width="80px"
+    >
       <el-form-item label="充值金额" prop="amount">
         <el-input v-model.number="formEditCharge.amount" placeholder="输入金额" />
       </el-form-item>

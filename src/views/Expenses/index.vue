@@ -238,11 +238,11 @@ onMounted(() => {
       <el-table-column fixed="right" label="操作" min-width="180">
         <template #default="{ row }">
           <template v-if="expenseStatus === 'undeleted'">
-            <el-button type="danger" @click.stop="handleDeleteBtn(row.id)">删除</el-button>
-            <el-button type="primary" @click.stop="handleEditBtn(row)">编辑</el-button>
+            <el-button type="danger" link @click.stop="handleDeleteBtn(row.id)">删除</el-button>
+            <el-button type="primary" link @click.stop="handleEditBtn(row)">编辑</el-button>
           </template>
           <template v-else>
-            <el-button type="warning" @click.stop="handleRestoreBtn(row.id)">恢复</el-button>
+            <el-button type="warning" link @click.stop="handleRestoreBtn(row.id)">恢复</el-button>
           </template>
         </template>
       </el-table-column>
@@ -286,10 +286,10 @@ onMounted(() => {
 }
 .table-wrapper {
   position: relative;
-  height: 480px;
+  height: 450px;
   .el-table {
     width: 100%;
-    height: 430px;
+    height: 400px;
     background-color: var(--project-management-bg);
 
     :deep(.el-table__cell) {

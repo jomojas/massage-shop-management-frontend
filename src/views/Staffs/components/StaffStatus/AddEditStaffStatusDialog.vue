@@ -111,7 +111,7 @@ const rules = {
     width="400px"
     :before-close="handleClose"
   >
-    <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
+    <el-form :model="form" :rules="rules" ref="formRef" label-position="right" label-width="50px">
       <el-form-item v-if="props.mode === 'add'" label="员工" prop="staffId">
         <el-select v-model="form.staffId" placeholder="请选择员工" filterable>
           <el-option

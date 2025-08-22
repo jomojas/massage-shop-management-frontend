@@ -171,6 +171,9 @@ onMounted(() => {
         </el-radio-button>
       </el-radio-group>
     </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="handleAdd">新增状态</el-button>
+    </el-form-item>
     <el-form-item class="input-search">
       <el-input
         v-model="searchKeyword"
@@ -182,7 +185,6 @@ onMounted(() => {
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="handleSearch">查询</el-button>
-      <el-button type="primary" @click="handleAdd">新增状态</el-button>
       <el-button type="primary" @click="handleFilter">高级筛选</el-button>
     </el-form-item>
     <el-form-item> </el-form-item>
@@ -209,7 +211,7 @@ onMounted(() => {
       <el-table-column prop="remark" label="备注" min-width="200" />
       <el-table-column label="操作" fixed="right" width="150">
         <template #default="{ row }">
-          <el-button type="primary" @click="handleEdit(row)">编辑</el-button>
+          <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -243,7 +245,7 @@ onMounted(() => {
   }
 
   .input-search {
-    width: 50%;
+    width: 30%;
     background-color: var(--staff-management-bg);
 
     :deep(.el-input__wrapper) {
@@ -253,12 +255,12 @@ onMounted(() => {
 }
 .table-wrapper {
   position: relative;
-  height: 480px;
+  height: 410px;
   // margin-top: 10px;
 
   .el-table {
     width: 100%;
-    height: 430px;
+    height: 360px;
     background-color: var(--staff-management-bg);
 
     :deep(.el-table__cell) {
