@@ -70,6 +70,7 @@ body {
 
 .el-select__wrapper {
   background-color: var(--staff-management-bg);
+  transition: background-color 0s ease;
 }
 /* .el-select-dropdown {
   background-color: var(--staff-management-bg) !important;
