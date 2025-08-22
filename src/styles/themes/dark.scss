@@ -71,6 +71,14 @@
   --project-management-bg: #141414;
   --project-management-text: var(--text-primary);
 
+  // === 操作日志模块专用变量 ===
+  --operation-management-bg: #141414;
+  --operation-management-text: var(--text-primary);
+
+  // === 支出管理模块专用变量 ===
+  --expense-management-bg: #141414;
+  --expense-management-text: var(--text-primary);
+
   // === 阴影语义化变量 ===
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
