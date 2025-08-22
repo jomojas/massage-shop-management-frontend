@@ -70,7 +70,13 @@ const isMobile = inject('isMobile', false)
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"
   >
-    <el-form :model="formFilter" :rules="rules" ref="formRef">
+    <el-form
+      :model="formFilter"
+      :rules="rules"
+      ref="formRef"
+      label-position="top"
+      :label-width="isMobile ? '100%' : '120px'"
+    >
       <el-form-item label="姓名电话">
         <el-input v-model="formFilter.keyword" placeholder="输入姓名或电话" />
       </el-form-item>

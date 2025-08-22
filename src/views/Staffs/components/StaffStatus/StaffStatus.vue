@@ -239,6 +239,7 @@ onMounted(() => {
     font-size: $font-size-normal;
     background-color: var(--member-management-bg);
     color: var(--member-management-text);
+    transition: background-color 0s ease;
   }
 
   .input-search {
@@ -259,14 +260,17 @@ onMounted(() => {
     width: 100%;
     height: 430px;
     background-color: var(--staff-management-bg);
-  }
-  :deep(.el-table__cell) {
-    background-color: var(--staff-management-bg) !important;
-    border-bottom: none;
-    color: var(--staff-management-text);
-  }
-  :deep(.el-table__empty-text) {
-    color: var(--staff-management-text);
+
+    :deep(.el-table__cell) {
+      background-color: var(--staff-management-bg) !important;
+      border-bottom: none;
+      color: var(--staff-management-text);
+      transition: background-color 0s ease;
+    }
+
+    :deep(.el-table__empty-text) {
+      color: var(--staff-management-text);
+    }
   }
   .pager {
     position: absolute;

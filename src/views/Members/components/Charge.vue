@@ -210,6 +210,7 @@ const handleFilterDialog = () => {
       background-color: var(--member-management-bg) !important;
       border-bottom: none;
       color: var(--member-management-text);
+      transition: background-color 0s ease;
     }
 
     :deep(.el-table__empty-text) {

@@ -77,8 +77,8 @@ const isMobile = inject('isMobile', false)
       :model="formFilter"
       :rules="rules"
       ref="formRef"
-      label-position="right"
-      label-width="80px"
+      label-position="top"
+      :label-width="isMobile ? '100%' : '120px'"
     >
       <el-form-item label="状态">
         <el-select v-model="formFilter.status" placeholder="请选择状态" clearable>

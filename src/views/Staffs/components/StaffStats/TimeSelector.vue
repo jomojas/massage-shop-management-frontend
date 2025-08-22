@@ -32,6 +32,7 @@ const handleTimeChange = (range) => {
     font-size: $font-size-normal;
     background-color: var(--staff-management-bg);
     color: var(--staff-management-text);
+    transition: background-color 0s ease;
   }
 }
 </style>

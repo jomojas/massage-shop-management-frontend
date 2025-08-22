@@ -548,10 +548,7 @@ GET /api/consumptions?keyword=张三&startDate=2025-08-01&minAmount=100&page=1&p
 ```json
 {
   "code": 200,
-  "message": "success",
-  "data": {
-    "project_id": 3
-  }
+  "message": "success"
 }
 ```
 
@@ -587,6 +584,13 @@ GET /api/consumptions?keyword=张三&startDate=2025-08-01&minAmount=100&page=1&p
   "priceGuest": 108.0,
   "priceMember": 85.0,
   "description": "升级版火罐疗法"
+}
+```
+
+```json
+{
+  "code": 200,
+  "message": "success"
 }
 ```
 

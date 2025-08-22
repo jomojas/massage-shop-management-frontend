@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { Search } from '@element-plus/icons-vue'
 import StaffServiceFilter from './StaffServiceFilter.vue'
 // 假设你已实现该API
 import { fetchStaffServiceRecords } from '@/api/modules/staff'
@@ -182,6 +183,7 @@ const handleSortChange = ({ prop, order }) => {
       background-color: var(--staff-management-bg) !important;
       border-bottom: none;
       color: var(--staff-management-text);
+      transition: background-color 0s ease;
     }
 
     :deep(.el-table__empty-text) {

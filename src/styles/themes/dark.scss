@@ -67,6 +67,10 @@
   --staff-management-text: var(--text-primary);
   --staff-management-dropdown-hover: var(--bg-elevated);
 
+  // === 项目管理模块专用变量 ===
+  --project-management-bg: #141414;
+  --project-management-text: var(--text-primary);
+
   // === 阴影语义化变量 ===
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);

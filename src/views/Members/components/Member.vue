@@ -314,6 +314,7 @@ const handleChargeBtn = (id) => {
     font-size: $font-size-normal;
     background-color: var(--member-management-bg);
     color: var(--member-management-text);
+    transition: background-color 0s ease;
   }
 
   .input-search {
@@ -354,6 +355,7 @@ const handleChargeBtn = (id) => {
       background-color: var(--member-management-bg) !important;
       border-bottom: none;
       color: var(--member-management-text);
+      transition: background-color 0s ease;
     }
 
     :deep(.el-table__empty-text) {
