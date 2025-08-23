@@ -59,7 +59,7 @@ const isMobile = inject('isMobile', false)
 
 <template>
   <el-dialog
-    v-model="props.modelValue"
+    :model-value="props.modelValue"
     title="筛选项目"
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"
@@ -71,8 +71,8 @@ const isMobile = inject('isMobile', false)
       label-position="right"
       label-width="80px"
     >
-      <el-form-item label="名称/类别">
-        <el-input v-model="formFilter.keyword" placeholder="输入项目名称或类别" />
+      <el-form-item label="名称">
+        <el-input v-model="formFilter.keyword" placeholder="输入项目名称" />
       </el-form-item>
       <el-form-item label="项目类别">
         <el-select v-model="formFilter.category" placeholder="请选择类别" clearable>

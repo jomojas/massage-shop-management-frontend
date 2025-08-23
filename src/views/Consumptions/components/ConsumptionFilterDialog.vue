@@ -1,32 +1,32 @@
 <script setup>
-import { defineProps, defineEmits, ref, inject, reactive, onMounted } from 'vue'
+import { defineProps, defineEmits, ref, inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import dayjs from 'dayjs'
 
 const props = defineProps({
   modelValue: Boolean,
-  statusDict: {
-    type: Array,
-    default: () => [],
-  },
 })
 const emit = defineEmits(['update:modelValue', 'search'])
 
 const formRef = ref(null)
 
+const rules = {}
+
 const formFilter = reactive({
-  status: '',
+  keyword: '',
+  minAmount: null,
+  maxAmount: null,
   dateRange: [],
-  sortBy: 'date',
+  sortBy: 'consume_time',
   order: 'desc',
 })
 
-const rules = {}
-
 const resetForm = () => {
-  formFilter.status = ''
+  formFilter.keyword = ''
+  formFilter.minAmount = null
+  formFilter.maxAmount = null
   formFilter.dateRange = []
-  formFilter.sortBy = 'date'
+  formFilter.sortBy = 'consume_time'
   formFilter.order = 'desc'
 }
 
@@ -43,8 +43,8 @@ const onSubmit = () => {
     if (valid) {
       let filters = { ...formFilter }
       if (Array.isArray(filters.dateRange) && filters.dateRange.length === 2) {
-        filters.startDate = dayjs(filters.dateRange[0]).format('YYYY-MM-DD')
-        filters.endDate = dayjs(filters.dateRange[1]).format('YYYY-MM-DD')
+        filters.startDate = dayjs(filters.dateRange[0]).format('YYYY-MM-DDTHH:mm:ss')
+        filters.endDate = dayjs(filters.dateRange[1]).format('YYYY-MM-DDTHH:mm:ss')
       } else {
         filters.startDate = ''
         filters.endDate = ''
@@ -69,7 +69,7 @@ const isMobile = inject('isMobile', false)
 <template>
   <el-dialog
     :model-value="props.modelValue"
-    title="高级筛选"
+    title="高级查询"
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"
   >
@@ -78,33 +78,51 @@ const isMobile = inject('isMobile', false)
       :rules="rules"
       ref="formRef"
       label-position="top"
-      :label-width="isMobile ? '100%' : '120px'"
+      label-width="90px"
     >
-      <el-form-item label="状态">
-        <el-select v-model="formFilter.status" placeholder="请选择状态" clearable>
-          <el-option v-for="item in props.statusDict" :key="item" :label="item" :value="item" />
-        </el-select>
+      <el-form-item label="关键词">
+        <el-input v-model="formFilter.keyword" placeholder="姓名/电话/员工/项目/描述" />
       </el-form-item>
-      <el-form-item label="日期范围">
-        <el-date-picker
-          v-model="formFilter.dateRange"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          format="YYYY-MM-DD"
-          value-format="YYYY-MM-DD"
+      <el-form-item label="金额区间">
+        <el-input-number
+          v-model="formFilter.minAmount"
+          :min="0"
+          :step="1"
+          :precision="2"
+          placeholder="最小金额"
+          style="width: 45%"
+        />
+        <span style="margin: 0 8px">-</span>
+        <el-input-number
+          v-model="formFilter.maxAmount"
+          :min="0"
+          :step="1"
+          :precision="2"
+          placeholder="最大金额"
+          style="width: 45%"
         />
       </el-form-item>
-      <el-form-item label="排序字段">
-        <el-radio-group v-model="formFilter.sortBy">
-          <el-radio-button label="date">日期</el-radio-button>
-          <el-radio-button label="staff_name">员工姓名</el-radio-button>
-        </el-radio-group>
+      <el-form-item label="消费日期">
+        <el-date-picker
+          v-model="formFilter.dateRange"
+          type="datetimerange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          format="YYYY-MM-DD HH:mm:ss"
+          date-format="YYYY/MM/DD ddd"
+          time-format="A hh:mm:ss"
+          style="width: 100%"
+        />
       </el-form-item>
-      <el-form-item label="顺序">
-        <el-radio-group v-model="formFilter.order">
-          <el-radio-button label="asc">升序</el-radio-button>
+      <el-form-item label="排序">
+        <el-radio-group v-model="formFilter.sortBy" class="sort-options">
+          <el-radio-button label="consume_time">消费时间</el-radio-button>
+          <el-radio-button label="name">客户姓名</el-radio-button>
+          <el-radio-button label="total_price">消费金额</el-radio-button>
+        </el-radio-group>
+        <el-radio-group v-model="formFilter.order" class="order-options">
           <el-radio-button label="desc">降序</el-radio-button>
+          <el-radio-button label="asc">升序</el-radio-button>
         </el-radio-group>
       </el-form-item>
       <el-form-item class="buttons">
@@ -117,11 +135,14 @@ const isMobile = inject('isMobile', false)
 
 <style lang="scss" scoped>
 .el-form {
+  .sort-options {
+    margin-right: 30px;
+  }
+
   :deep(.buttons .el-form-item__content) {
     display: flex;
     justify-content: flex-end;
     gap: 20px;
-
     .el-button {
       width: 100px;
     }

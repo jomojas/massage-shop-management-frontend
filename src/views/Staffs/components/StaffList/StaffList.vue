@@ -16,11 +16,6 @@ import {
   restoreStaff,
 } from '@/api/modules/staff'
 
-// 页面加载时自动请求一次数据
-onMounted(() => {
-  fetchStaffs()
-})
-
 // 弹窗控制
 const showAddDialog = ref(false)
 const showEditDialog = ref(false)
@@ -28,13 +23,15 @@ const showFilterDialog = ref(false)
 const showStaffTimeLine = ref(false)
 
 // 状态与数据
-const staffStatus = ref('undeleted')
-const searchKeyword = ref('')
 const tableData = ref([])
+const total = ref(0)
+
 const currentFilters = ref({})
+const searchKeyword = ref('')
+const staffStatus = ref('undeleted')
 const currentPage = ref(1)
 const pageSize = ref(8)
-const total = ref(0)
+// 排序字段和顺序
 const sortBy = ref('')
 const orderType = ref('')
 
@@ -46,12 +43,14 @@ const currentTimelineStaffId = ref(null)
 const currentTimelineStaffName = ref('')
 
 // 查询员工
-const fetchStaffs = async (extra = {}) => {
+const fetchStaffs = async () => {
   const params = {
     ...currentFilters.value,
+    keyword: searchKeyword.value,
+    sortBy: sortBy.value,
+    order: orderType.value,
     page: currentPage.value,
-    page_size: pageSize.value,
-    ...extra,
+    size: pageSize.value,
   }
   let res
   if (staffStatus.value === 'undeleted') {
@@ -69,15 +68,13 @@ const sortFieldMap = {
   commission: 'commission',
 }
 const handleSortChange = ({ prop, order }) => {
-  const sortByParam = sortFieldMap[prop] || prop
   if (!order) {
-    sortBy.value = ''
-    orderType.value = ''
-    currentFilters.value = { ...currentFilters.value }
+    // 未排序时恢复默认排序
+    sortBy.value = 'name'
+    orderType.value = 'asc'
   } else {
-    sortBy.value = sortByParam
+    sortBy.value = sortFieldMap[prop] || prop
     orderType.value = order === 'ascending' ? 'asc' : 'desc'
-    currentFilters.value = { ...currentFilters.value, sortBy: sortBy.value, order: orderType.value }
   }
   currentPage.value = 1
   fetchStaffs()
@@ -86,6 +83,9 @@ const handleSortChange = ({ prop, order }) => {
 // 高级筛选
 const handleFilterSearch = (filters) => {
   currentFilters.value = { ...filters }
+  searchKeyword.value = filters.keyword || ''
+  sortBy.value = filters.sortBy || 'name'
+  orderType.value = filters.order || 'asc'
   currentPage.value = 1
   fetchStaffs()
 }
@@ -161,7 +161,9 @@ const handlePageChange = (page) => {
 
 // 简单搜索
 const handleSimpleSearch = () => {
-  currentFilters.value = { keyword: searchKeyword.value }
+  currentFilters.value = {}
+  sortBy.value = 'name'
+  orderType.value = 'asc'
   currentPage.value = 1
   fetchStaffs()
 }
@@ -180,6 +182,11 @@ const handleAddStaff = () => {
 const handleFilterDialog = () => {
   showFilterDialog.value = true
 }
+
+// 页面加载时自动请求一次数据
+onMounted(() => {
+  fetchStaffs()
+})
 </script>
 
 <template>
@@ -227,7 +234,11 @@ const handleFilterDialog = () => {
       @sort-change="handleSortChange"
       @row-click="handleRowClick"
     >
-      <el-table-column fixed prop="createTime" label="创建时间" width="160" />
+      <el-table-column fixed prop="createTime" label="创建时间" width="160">
+        <template #default="{ row }">
+          {{ row.createTime ? row.createTime.replace('T', ' ') : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="name"
         label="姓名"

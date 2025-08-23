@@ -72,14 +72,4 @@ body {
   background-color: var(--staff-management-bg);
   transition: background-color 0s ease;
 }
-/* .el-select-dropdown {
-  background-color: var(--staff-management-bg) !important;
-  color: var(--staff-management-text) !important;
-}
-
-.el-select-dropdown__item.hover,
-.el-select-dropdown__item:hover {
-  background-color: var(--staff-management-dropdown-hover) !important;
-  color: var(--staff-management-text) !important;
-} */
 </style>

@@ -75,7 +75,7 @@ const isMobile = inject('isMobile', false)
 
 <template>
   <el-dialog
-    v-model="props.modelValue"
+    :model-value="props.modelValue"
     title="高级查询"
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"
@@ -87,6 +87,9 @@ const isMobile = inject('isMobile', false)
       label-position="top"
       label-width="90px"
     >
+      <el-form-item label="描述关键词">
+        <el-input v-model="formFilter.keyword" placeholder="输入描述关键词" />
+      </el-form-item>
       <el-form-item label="支出类别">
         <el-select v-model="formFilter.category" placeholder="全部" clearable>
           <el-option v-for="item in props.categories" :key="item" :label="item" :value="item" />
@@ -121,9 +124,6 @@ const isMobile = inject('isMobile', false)
           value-format="YYYY-MM-DD"
           style="width: 100%"
         />
-      </el-form-item>
-      <el-form-item label="描述关键词">
-        <el-input v-model="formFilter.keyword" placeholder="输入描述关键词" />
       </el-form-item>
       <el-form-item label="排序">
         <el-radio-group v-model="formFilter.sortBy" class="sort-options">

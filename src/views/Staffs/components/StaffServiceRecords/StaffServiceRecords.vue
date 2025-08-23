@@ -5,35 +5,37 @@ import { Search } from '@element-plus/icons-vue'
 import StaffServiceFilter from './StaffServiceFilter.vue'
 // 假设你已实现该API
 import { fetchStaffServiceRecords } from '@/api/modules/staff'
-onMounted(() => {
-  fetchRecords()
-})
+
+const showFilterDialog = ref(false)
 
 const tableData = ref([])
 const total = ref(0)
+
+const currentFilters = ref({})
+const searchKeyword = ref('')
 const currentPage = ref(1)
 const pageSize = ref(8)
 const loading = ref(false)
-
-const searchKeyword = ref('')
-const showFilterDialog = ref(false)
-const currentFilters = ref({})
+// 排序字段和顺序
 const sortBy = ref('')
 const orderType = ref('')
 
-const fetchRecords = async (extra = {}) => {
+const fetchRecords = async () => {
   loading.value = true
   try {
     const params = {
       ...currentFilters.value,
       keyword: searchKeyword.value,
+      sortBy: sortBy.value,
+      order: orderType.value,
       page: currentPage.value,
       page_size: pageSize.value,
-      ...extra,
     }
     const res = await fetchStaffServiceRecords(params)
     tableData.value = res.records || []
+    // console.log('tableData:', tableData.value)
     total.value = res.totalRecords || 0
+    // console.log('total:', total.value)
   } catch (e) {
     ElMessage.error('查询失败')
   } finally {
@@ -47,6 +49,9 @@ const handlePageChange = (page) => {
 }
 
 const handleSimpleSearch = () => {
+  currentFilters.value = {}
+  sortBy.value = 'consumption_date'
+  orderType.value = 'desc'
   currentPage.value = 1
   fetchRecords()
 }
@@ -57,6 +62,9 @@ const handleFilterDialog = () => {
 
 const handleFilterSearch = (filters) => {
   currentFilters.value = { ...filters }
+  searchKeyword.value = filters.keyword || ''
+  sortBy.value = filters.sortBy || 'consumption_date'
+  orderType.value = filters.order || 'desc'
   currentPage.value = 1
   fetchRecords()
 }
@@ -68,19 +76,21 @@ const sortFieldMap = {
 }
 
 const handleSortChange = ({ prop, order }) => {
-  const sortByParam = sortFieldMap[prop] || prop
   if (!order) {
-    sortBy.value = ''
-    orderType.value = ''
-    currentFilters.value = { ...currentFilters.value }
+    // 未排序时恢复默认排序
+    sortBy.value = 'consumption_date'
+    orderType.value = 'desc'
   } else {
-    sortBy.value = sortByParam
+    sortBy.value = sortFieldMap[prop] || prop
     orderType.value = order === 'ascending' ? 'asc' : 'desc'
-    currentFilters.value = { ...currentFilters.value, sortBy: sortBy.value, order: orderType.value }
   }
   currentPage.value = 1
   fetchRecords()
 }
+
+onMounted(() => {
+  fetchRecords()
+})
 </script>
 
 <template>
@@ -91,7 +101,7 @@ const handleSortChange = ({ prop, order }) => {
     <el-form-item class="input-search">
       <el-input
         v-model="searchKeyword"
-        placeholder="输入项目/会员/客户描述"
+        placeholder="输入项目/会员/客户描述/员工姓名"
         clearable
         size="large"
         :suffix-icon="Search"
@@ -110,11 +120,15 @@ const handleSortChange = ({ prop, order }) => {
       <el-table-column
         fixed
         prop="serviceTime"
-        label="服务日期"
+        label="服务时间"
         sortable="custom"
         :sort-orders="['ascending', 'descending']"
         width="180"
-      />
+      >
+        <template #default="{ row }">
+          {{ row.serviceTime ? row.serviceTime.replace('T', ' ') : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="staffName"
         label="员工姓名"

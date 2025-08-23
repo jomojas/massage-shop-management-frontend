@@ -15,19 +15,22 @@ import EditExpenseDialog from './components/EditExpenseDialog.vue'
 import ExpenseFilterDialog from './components/ExpenseFilterDialog.vue'
 import { Search } from '@element-plus/icons-vue'
 
-const expenseStatus = ref('undeleted')
-const searchKeyword = ref('')
-const tableData = ref([])
-const currentFilters = ref({})
-const currentPage = ref(1)
-const pageSize = ref(8)
-const total = ref(0)
-const sortBy = ref('')
-const orderType = ref('')
-
 const showAddDialog = ref(false)
 const showEditDialog = ref(false)
 const showFilterDialog = ref(false)
+
+const tableData = ref([])
+const total = ref(0)
+
+const currentFilters = ref({})
+const expenseStatus = ref('undeleted')
+const searchKeyword = ref('')
+const currentPage = ref(1)
+const pageSize = ref(8)
+// 排序字段和顺序
+const sortBy = ref('')
+const orderType = ref('')
+
 const currentEditExpense = ref({})
 const expenseCategories = ref([])
 
@@ -38,12 +41,14 @@ const getCategories = async () => {
 }
 
 // 查询支出记录
-const fetchExpenseList = async (extra = {}) => {
+const fetchExpenseList = async () => {
   const params = {
     ...currentFilters.value,
+    keyword: searchKeyword.value,
+    sortBy: sortBy.value,
+    order: orderType.value,
     page: currentPage.value,
     size: pageSize.value,
-    ...extra,
   }
   let res
   if (expenseStatus.value === 'undeleted') {
@@ -64,15 +69,13 @@ const sortFieldMap = {
   amount: 'amount',
 }
 const handleSortChange = ({ prop, order }) => {
-  const sortByParam = sortFieldMap[prop] || prop
   if (!order) {
-    sortBy.value = ''
-    orderType.value = ''
-    currentFilters.value = { ...currentFilters.value }
+    // 未排序时恢复默认排序
+    sortBy.value = 'spend_date'
+    orderType.value = 'desc'
   } else {
-    sortBy.value = sortByParam
+    sortBy.value = sortFieldMap[prop] || prop
     orderType.value = order === 'ascending' ? 'asc' : 'desc'
-    currentFilters.value = { ...currentFilters.value, sortBy: sortBy.value, order: orderType.value }
   }
   currentPage.value = 1
   fetchExpenseList()
@@ -81,6 +84,9 @@ const handleSortChange = ({ prop, order }) => {
 // 高级筛选
 const handleFilterSearch = (filters) => {
   currentFilters.value = { ...filters }
+  searchKeyword.value = filters.keyword || ''
+  sortBy.value = filters.sortBy || 'spend_date'
+  orderType.value = filters.order || 'desc'
   currentPage.value = 1
   fetchExpenseList()
 }
@@ -156,7 +162,9 @@ const handlePageChange = (page) => {
 
 // 简单查询
 const handleSimpleSearch = () => {
-  currentFilters.value = { keyword: searchKeyword.value }
+  currentFilters.value = {}
+  sortBy.value = 'spend_date'
+  orderType.value = 'desc'
   currentPage.value = 1
   fetchExpenseList()
 }
@@ -220,6 +228,7 @@ onMounted(() => {
       <el-table-column
         prop="spendDate"
         label="支出日期"
+        fixed
         sortable="custom"
         :sort-orders="['ascending', 'descending']"
         width="120"
@@ -232,9 +241,17 @@ onMounted(() => {
         :sort-orders="['ascending', 'descending']"
         width="100"
       />
-      <el-table-column prop="description" label="描述" min-width="200" />
-      <el-table-column prop="createTime" label="创建时间" width="160" />
-      <el-table-column prop="updateTime" label="更新时间" width="160" />
+      <el-table-column prop="description" label="描述" min-width="300" />
+      <el-table-column prop="createTime" label="创建时间" width="160">
+        <template #default="{ row }">
+          {{ row.createTime ? row.createTime.replace('T', ' ') : '-' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="updateTime" label="更新时间" width="160">
+        <template #default="{ row }">
+          {{ row.updateTime ? row.updateTime.replace('T', ' ') : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" label="操作" min-width="180">
         <template #default="{ row }">
           <template v-if="expenseStatus === 'undeleted'">

@@ -34,6 +34,9 @@ const resetForm = () => {
   formAddExpense.amount = null
   formAddExpense.spendDate = ''
   formAddExpense.description = ''
+  if (formRef.value) {
+    formRef.value.clearValidate?.()
+  }
 }
 const handleCancel = () => {
   resetForm()
@@ -64,7 +67,7 @@ const isMobile = inject('isMobile', false)
 
 <template>
   <el-dialog
-    v-model="props.modelValue"
+    :model-value="props.modelValue"
     title="新增支出记录"
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"

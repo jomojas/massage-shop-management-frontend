@@ -11,24 +11,25 @@ import {
 } from '@/api/modules/staff'
 import { Search } from '@element-plus/icons-vue'
 
-const tableData = ref([])
-const total = ref(0)
-const currentPage = ref(1)
-const pageSize = ref(8)
-const loading = ref(false)
-const statusDict = ref([])
-const searchStatus = ref('') // ''表示全部
-
-const searchKeyword = ref('')
-const currentFilters = ref({})
-const sortBy = ref('')
-const orderType = ref('')
-
 // 弹窗控制
 const showFilterDialog = ref(false)
 const showAddEditDialog = ref(false)
 const dialogMode = ref('add') // 'add' or 'edit'
 const currentEdit = ref(null)
+
+const tableData = ref([])
+const total = ref(0)
+
+const currentFilters = ref({})
+const searchKeyword = ref('')
+const searchStatus = ref('') // ''表示全部
+const currentPage = ref(1)
+const pageSize = ref(8)
+const statusDict = ref([])
+const loading = ref(false)
+// 排序字段与顺序
+const sortBy = ref('')
+const orderType = ref('')
 
 // 获取状态字典
 const getStatusDict = async () => {
@@ -38,21 +39,22 @@ const getStatusDict = async () => {
 }
 
 // 获取列表
-const fetchList = async (extra = {}) => {
+const fetchList = async () => {
   loading.value = true
   try {
     const params = {
       ...currentFilters.value,
       keyword: searchKeyword.value,
+      sortBy: sortBy.value,
+      order: orderType.value,
       page: currentPage.value,
       size: pageSize.value,
-      status: searchStatus.value || undefined,
-      ...extra,
+      status: searchStatus.value,
     }
     const res = await fetchStaffStatusList(params)
     tableData.value = res.records || []
     total.value = res.totalRecords || 0
-    console.log('Fetched staff status list:', total.value)
+    // console.log('Fetched staff status list:', total.value)
   } catch (e) {
     ElMessage.error('查询失败')
   } finally {
@@ -65,17 +67,14 @@ const sortFieldMap = {
   date: 'date',
   staffName: 'staff_name',
 }
-
 const handleSortChange = ({ prop, order }) => {
-  const sortByParam = sortFieldMap[prop] || prop
   if (!order) {
-    sortBy.value = ''
-    orderType.value = ''
-    currentFilters.value = { ...currentFilters.value }
+    // 未排序时恢复默认排序
+    sortBy.value = 'date'
+    orderType.value = 'desc'
   } else {
-    sortBy.value = sortByParam
+    sortBy.value = sortFieldMap[prop] || prop
     orderType.value = order === 'ascending' ? 'asc' : 'desc'
-    currentFilters.value = { ...currentFilters.value, sortBy: sortBy.value, order: orderType.value }
   }
   currentPage.value = 1
   fetchList()
@@ -84,7 +83,11 @@ const handleSortChange = ({ prop, order }) => {
 // 高级筛选提交
 const handleFilterSearch = (filters) => {
   currentFilters.value = { ...filters }
+  searchKeyword.value = filters.keyword || ''
+  sortBy.value = filters.sortBy || 'date'
+  orderType.value = filters.order || 'desc'
   currentPage.value = 1
+  searchStatus.value = filters.status || ''
   fetchList()
 }
 
@@ -102,7 +105,11 @@ const handleStatusChange = () => {
 
 // 查询
 const handleSearch = () => {
+  currentFilters.value = {}
+  sortBy.value = 'date'
+  orderType.value = 'desc'
   currentPage.value = 1
+  searchStatus.value = ''
   fetchList()
 }
 

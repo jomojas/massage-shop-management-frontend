@@ -221,7 +221,7 @@
   | `endDate` | string | 否 | 消费结束时间 |
   | `minAmount` | decimal | 否 | 最小消费金额 |
   | `maxAmount` | decimal | 否 | 最大消费金额 |
-  | `sortBy` | string | 否 | 排序字段，可选值：`name`（客户姓名）、`total_price`（消费金额）、`consume_time`（消费时间） ,默认`date`|
+  | `sortBy` | string | 否 | 排序字段，可选值：`name`（客户姓名）、`total_price`（消费金额）、`consume_time`（消费时间） ,默认`consume_time`|
   | `order` | string | 否 | 排序方式，`asc` 升序，`desc` 降序，默认：`desc`(最近到最远) |
   | `page` | int | 否 | 当前页（默认：1） |
   | `size` | int | 否 | 每页条数（默认：10） |
@@ -642,7 +642,7 @@ GET /api/consumptions?keyword=张三&startDate=2025-08-01&minAmount=100&page=1&p
 - 请求参数:
   | 参数名 | 类型 | 是否必须 | 说明 |
   | -------------- | ------- | ---- | ------------------------------------------------------------------ |
-  | `keyword` | String | 否 | 模糊关键字（匹配项目名称、会员姓名、普通客户描述） |
+  | `keyword` | String | 否 | 模糊关键字（匹配项目名称、会员姓名、普通客户描述、员工姓名） |
   | `date_start` | String | 否 | 消费开始时间（格式：`YYYY-MM-DD`） |
   | `date_end` | String | 否 | 消费结束时间（格式：`YYYY-MM-DD`） |
   | `earnings_min` | Decimal | 否 | 最低服务收入 |

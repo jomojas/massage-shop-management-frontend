@@ -17,20 +17,23 @@ import EditProjectDialog from './components/EditProjectDialog.vue'
 import AddCategoryDialog from './components/AddCategoryDialog.vue'
 import ProjectFilterDialog from './components/ProjectFilterDialog.vue'
 
-const projectStatus = ref('undeleted')
-const searchKeyword = ref('')
-const tableData = ref([])
-const currentFilters = ref({})
-const currentPage = ref(1)
-const pageSize = ref(8)
-const total = ref(0)
-const sortBy = ref('')
-const orderType = ref('')
-
 const showAddDialog = ref(false)
 const showEditDialog = ref(false)
 const showAddCategoryDialog = ref(false)
 const showFilterDialog = ref(false)
+
+const tableData = ref([])
+const total = ref(0)
+
+const currentFilters = ref({})
+const searchKeyword = ref('')
+const projectStatus = ref('undeleted')
+const currentPage = ref(1)
+const pageSize = ref(8)
+// 排序字段和顺序
+const sortBy = ref('')
+const orderType = ref('')
+
 const currentEditProject = ref({})
 const projectCategories = ref([])
 
@@ -42,12 +45,14 @@ const getCategories = async () => {
 }
 
 // 查询项目
-const fetchProjectList = async (extra = {}) => {
+const fetchProjectList = async () => {
   const params = {
     ...currentFilters.value,
+    keyword: searchKeyword.value,
+    sortBy: sortBy.value,
+    order: orderType.value,
     page: currentPage.value,
     size: pageSize.value,
-    ...extra,
   }
   let res
   if (projectStatus.value === 'undeleted') {
@@ -66,15 +71,13 @@ const sortFieldMap = {
   priceMember: 'price_member',
 }
 const handleSortChange = ({ prop, order }) => {
-  const sortByParam = sortFieldMap[prop] || prop
   if (!order) {
-    sortBy.value = ''
-    orderType.value = ''
-    currentFilters.value = { ...currentFilters.value }
+    // 未排序时恢复默认排序
+    sortBy.value = 'name'
+    orderType.value = 'asc'
   } else {
-    sortBy.value = sortByParam
+    sortBy.value = sortFieldMap[prop] || prop
     orderType.value = order === 'ascending' ? 'asc' : 'desc'
-    currentFilters.value = { ...currentFilters.value, sortBy: sortBy.value, order: orderType.value }
   }
   currentPage.value = 1
   fetchProjectList()
@@ -83,6 +86,9 @@ const handleSortChange = ({ prop, order }) => {
 // 高级筛选
 const handleFilterSearch = (filters) => {
   currentFilters.value = { ...filters }
+  searchKeyword.value = filters.keyword || ''
+  sortBy.value = filters.sortBy || 'name'
+  orderType.value = filters.order || 'asc'
   currentPage.value = 1
   fetchProjectList()
 }
@@ -171,7 +177,9 @@ const handlePageChange = (page) => {
 
 // 简单查询
 const handleSimpleSearch = () => {
-  currentFilters.value = { keyword: searchKeyword.value }
+  currentFilters.value = {}
+  sortBy.value = 'name'
+  orderType.value = 'asc'
   currentPage.value = 1
   fetchProjectList()
 }
@@ -234,6 +242,11 @@ onMounted(() => {
 
   <div class="table-wrapper">
     <el-table :data="tableData" style="width: 100%" @sort-change="handleSortChange">
+      <el-table-column prop="createdTime" fixed label="创建时间" width="160">
+        <template #default="{ row }">
+          {{ row.createdTime ? row.createdTime.replace('T', ' ') : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="name"
         label="项目名称"
@@ -257,8 +270,11 @@ onMounted(() => {
         width="100"
       />
       <el-table-column prop="description" label="描述" min-width="200" />
-      <el-table-column prop="createdTime" label="创建时间" width="160" />
-      <el-table-column prop="updatedTime" label="更新时间" width="160" />
+      <el-table-column prop="updatedTime" label="更新时间" width="160">
+        <template #default="{ row }">
+          {{ row.updatedTime ? row.updatedTime.replace('T', ' ') : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" label="操作" min-width="180">
         <template #default="{ row }">
           <template v-if="projectStatus === 'undeleted'">

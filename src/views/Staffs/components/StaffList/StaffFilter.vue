@@ -55,7 +55,7 @@ const isMobile = inject('isMobile', false)
 
 <template>
   <el-dialog
-    v-model="props.modelValue"
+    :model-value="props.modelValue"
     title="筛选员工"
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"

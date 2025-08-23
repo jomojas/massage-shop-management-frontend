@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps, defineEmits, ref, inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
+import dayjs from 'dayjs'
 
 const props = defineProps({ modelValue: Boolean })
 const emit = defineEmits(['update:modelValue', 'search'])
@@ -40,8 +41,8 @@ const onSubmit = () => {
     if (valid) {
       let filters = { ...formFilter }
       if (Array.isArray(filters.dateRange) && filters.dateRange.length === 2) {
-        filters.startDate = dayjs(filters.dateRange[0]).format('YYYY-MM-DD HH:mm:ss')
-        filters.endDate = dayjs(filters.dateRange[1]).format('YYYY-MM-DD HH:mm:ss')
+        filters.startDate = dayjs(filters.dateRange[0]).format('YYYY-MM-DDTHH:mm:ss')
+        filters.endDate = dayjs(filters.dateRange[1]).format('YYYY-MM-DDTHH:mm:ss')
       } else {
         filters.startDate = ''
         filters.endDate = ''
@@ -65,7 +66,7 @@ const isMobile = inject('isMobile', false)
 
 <template>
   <el-dialog
-    v-model="props.modelValue"
+    :model-value="props.modelValue"
     title="筛选会员"
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"

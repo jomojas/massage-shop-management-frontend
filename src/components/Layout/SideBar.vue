@@ -164,6 +164,7 @@ const handleMenu = (item: MenuItem) => {
       color: var(--sidebar-text);
       font-size: $font-size-normal;
       font-family: $font-family-base;
+      transition: background-color 0s ease;
 
       &:hover {
         background-color: var(--sidebar-hover-bg);

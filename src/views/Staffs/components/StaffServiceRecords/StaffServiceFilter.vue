@@ -41,8 +41,8 @@ const onSubmit = () => {
     if (valid) {
       let filters = { ...formFilter }
       if (Array.isArray(filters.dateRange) && filters.dateRange.length === 2) {
-        filters.date_start = dayjs(filters.dateRange[0]).format('YYYY-MM-DD')
-        filters.date_end = dayjs(filters.dateRange[1]).format('YYYY-MM-DD')
+        filters.date_start = dayjs(filters.dateRange[0]).format('YYYY-MM-DDTHH:mm:ss')
+        filters.date_end = dayjs(filters.dateRange[1]).format('YYYY-MM-DDTHH:mm:ss')
       } else {
         filters.date_start = ''
         filters.date_end = ''
@@ -66,7 +66,7 @@ const isMobile = inject('isMobile', false)
 
 <template>
   <el-dialog
-    v-model="props.modelValue"
+    :model-value="props.modelValue"
     title="筛选服务记录"
     :width="isMobile ? '90%' : '40%'"
     :before-close="handleClose"
@@ -79,7 +79,7 @@ const isMobile = inject('isMobile', false)
       :label-width="isMobile ? '100%' : '120px'"
     >
       <el-form-item label="关键字">
-        <el-input v-model="formFilter.keyword" placeholder="输入项目/会员/客户描述" />
+        <el-input v-model="formFilter.keyword" placeholder="输入项目/会员/客户描述/员工姓名" />
       </el-form-item>
       <el-form-item label="排序依据" class="radio-groups">
         <el-radio-group v-model="formFilter.sortBy" class="sort-options">
@@ -93,18 +93,29 @@ const isMobile = inject('isMobile', false)
         </el-radio-group>
       </el-form-item>
       <el-form-item label="收入区间">
-        <el-input-number v-model="formFilter.earnings_min" placeholder="最低收入" :min="0" />
+        <el-input-number
+          v-model="formFilter.earnings_min"
+          placeholder="最低收入"
+          :min="0"
+          style="width: 45%"
+        />
         <span style="margin: 0 8px">-</span>
-        <el-input-number v-model="formFilter.earnings_max" placeholder="最高收入" :min="0" />
+        <el-input-number
+          v-model="formFilter.earnings_max"
+          placeholder="最高收入"
+          :min="0"
+          style="width: 45%"
+        />
       </el-form-item>
       <el-form-item label="消费日期">
         <el-date-picker
           v-model="formFilter.dateRange"
-          type="daterange"
+          type="datetimerange"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          format="YYYY-MM-DD"
+          format="YYYY-MM-DD HH:mm:ss"
           date-format="YYYY/MM/DD ddd"
+          time-format="A hh:mm:ss"
         />
       </el-form-item>
       <el-form-item class="buttons">

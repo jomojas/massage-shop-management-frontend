@@ -5,36 +5,35 @@ import { Edit, Search } from '@element-plus/icons-vue'
 import ChargeFilter from './ChargeFilter.vue'
 import EditChargeDialog from './EditChargeDialog.vue'
 import { fetchRechargeRecords, editCharge } from '@/api/modules/member'
-// 页面加载时自动请求一次数据
-onMounted(() => {
-  fetchCharges()
-})
+
+const showFilterDialog = ref(false)
+const showEditDialog = ref(false)
+
+const tableData = ref([])
+const total = ref(0)
+
+const currentFilters = ref({})
+const searchKeyword = ref('')
+const currentPage = ref(1)
+const pageSize = ref(8)
+// 排序字段和顺序
+const sortBy = ref('')
+const orderType = ref('')
 
 // 用于存储当前编辑的充值数据
 const currentEditCharge = ref({})
 // 用于存储当前操作的充值记录ID
 const currentChargeId = ref(null)
 
-const showFilterDialog = ref(false)
-const showEditDialog = ref(false)
-
-const searchKeyword = ref('')
-const tableData = ref([])
-const currentFilters = ref({})
-const currentPage = ref(1)
-const pageSize = ref(8)
-const total = ref(0)
-// 排序字段和顺序
-const sortBy = ref('')
-const orderType = ref('')
-
 // 查询函数，合并filters、分页参数，根据memberStatus调用不同接口
-const fetchCharges = async (extra = {}) => {
+const fetchCharges = async () => {
   const params = {
     ...currentFilters.value,
+    keyword: searchKeyword.value,
+    sortBy: sortBy.value,
+    order: orderType.value,
     page: currentPage.value,
     size: pageSize.value,
-    ...extra,
   }
   // console.log('Fetching charges with params:', params)
   let res = await fetchRechargeRecords(params)
@@ -42,20 +41,6 @@ const fetchCharges = async (extra = {}) => {
   total.value = res.totalRecords || 0
   // console.log('tableData:', tableData.value)
   // console.log('total:', total.value)
-}
-
-// 高级筛选弹窗回调
-const handleFilterSearch = (filters) => {
-  currentFilters.value = { ...filters }
-  currentPage.value = 1
-  fetchCharges()
-}
-
-// 仅通过keyword搜索
-const handleSimpleSearch = () => {
-  currentFilters.value = { keyword: searchKeyword.value }
-  currentPage.value = 1
-  fetchCharges()
 }
 
 // 解决sortBy查询是created_time但是返回的会员信息中却是createdTime的问题
@@ -67,17 +52,33 @@ const sortFieldMap = {
 // 表头排序事件
 const handleSortChange = ({ prop, order }) => {
   // 将createdTime转换为created_time
-  const sortByParam = sortFieldMap[prop] || prop
   if (!order) {
-    sortBy.value = ''
-    orderType.value = ''
-    currentFilters.value = { ...currentFilters.value }
+    // 未排序时恢复默认排序
+    sortBy.value = 'recharge_time'
+    orderType.value = 'desc'
   } else {
-    sortBy.value = sortByParam
+    sortBy.value = sortFieldMap[prop] || prop
     orderType.value = order === 'ascending' ? 'asc' : 'desc'
-    currentFilters.value = { ...currentFilters.value, sortBy: sortBy.value, order: orderType.value }
   }
   // console.log('Sorting by:', sortBy.value, 'Order:', orderType.value)
+  currentPage.value = 1
+  fetchCharges()
+}
+// 高级筛选弹窗回调
+const handleFilterSearch = (filters) => {
+  currentFilters.value = { ...filters }
+  searchKeyword.value = filters.keyword || ''
+  sortBy.value = filters.sortBy || 'recharge_time'
+  orderType.value = filters.order || 'desc'
+  currentPage.value = 1
+  fetchCharges()
+}
+
+// 仅通过keyword搜索
+const handleSimpleSearch = () => {
+  currentFilters.value = {}
+  sortBy.value = 'recharge_time'
+  orderType.value = 'desc'
   currentPage.value = 1
   fetchCharges()
 }
@@ -108,6 +109,11 @@ const handlePageChange = (page) => {
 const handleFilterDialog = () => {
   showFilterDialog.value = true
 }
+
+// 页面加载时自动请求一次数据
+onMounted(() => {
+  fetchCharges()
+})
 </script>
 
 <template>
@@ -145,7 +151,11 @@ const handleFilterDialog = () => {
         sortable="custom"
         :sort-orders="['ascending', 'descending']"
         width="160"
-      />
+      >
+        <template #default="{ row }">
+          {{ row.rechargeTime ? row.rechargeTime.replace('T', ' ') : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="memberName"
         label="姓名"

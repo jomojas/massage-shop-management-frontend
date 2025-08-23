@@ -17,10 +17,6 @@ import {
 } from '@/api/modules/member'
 import { ElMessage } from 'element-plus'
 import { ElMessageBox } from 'element-plus'
-// 页面加载时自动请求一次数据
-onMounted(() => {
-  fetchMembers()
-})
 
 const showFilterDialog = ref(false)
 const showAddDialog = ref(false)
@@ -28,13 +24,14 @@ const showEditDialog = ref(false)
 const showRechargeDialog = ref(false)
 const showMemberTimeLine = ref(false)
 
-const memberStatus = ref('undeleted')
-const searchKeyword = ref('')
 const tableData = ref([])
+const total = ref(0)
+
 const currentFilters = ref({})
+const searchKeyword = ref('')
+const memberStatus = ref('undeleted')
 const currentPage = ref(1)
 const pageSize = ref(8)
-const total = ref(0)
 // 排序字段和顺序
 const sortBy = ref('')
 const orderType = ref('')
@@ -50,12 +47,14 @@ const currentMemberId = ref(null)
 const currentEditMember = ref({})
 
 // 查询函数，合并filters、分页参数，根据memberStatus调用不同接口
-const fetchMembers = async (extra = {}) => {
+const fetchMembers = async () => {
   const params = {
     ...currentFilters.value,
+    keyword: searchKeyword.value,
+    sortBy: sortBy.value,
+    order: orderType.value,
     page: currentPage.value,
     size: pageSize.value,
-    ...extra,
   }
   // console.log('Fetching members with params:', params)
   let res
@@ -68,7 +67,7 @@ const fetchMembers = async (extra = {}) => {
   total.value = res.totalMembers || 0
 }
 
-// 解决sortBy查询是created_time但是返回的会员信息中却是createdTime的问题
+// 排序字段映射
 const sortFieldMap = {
   createdTime: 'created_time',
   name: 'name',
@@ -76,18 +75,14 @@ const sortFieldMap = {
 }
 // 表头排序事件
 const handleSortChange = ({ prop, order }) => {
-  // 将createdTime转换为created_time
-  const sortByParam = sortFieldMap[prop] || prop
   if (!order) {
-    sortBy.value = ''
-    orderType.value = ''
-    currentFilters.value = { ...currentFilters.value }
+    // 未排序时恢复默认排序
+    sortBy.value = 'created_time'
+    orderType.value = 'desc'
   } else {
-    sortBy.value = sortByParam
+    sortBy.value = sortFieldMap[prop] || prop
     orderType.value = order === 'ascending' ? 'asc' : 'desc'
-    currentFilters.value = { ...currentFilters.value, sortBy: sortBy.value, order: orderType.value }
   }
-  // console.log('Sorting by:', sortBy.value, 'Order:', orderType.value)
   currentPage.value = 1
   fetchMembers()
 }
@@ -95,6 +90,9 @@ const handleSortChange = ({ prop, order }) => {
 // 高级筛选弹窗回调
 const handleFilterSearch = (filters) => {
   currentFilters.value = { ...filters }
+  searchKeyword.value = filters.keyword || ''
+  sortBy.value = filters.sortBy || 'created_time'
+  orderType.value = filters.order || 'desc'
   currentPage.value = 1
   fetchMembers()
 }
@@ -143,7 +141,9 @@ const handlePageChange = (page) => {
 
 // 仅通过keyword搜索
 const handleSimpleSearch = () => {
-  currentFilters.value = { keyword: searchKeyword.value }
+  currentFilters.value = {}
+  sortBy.value = 'created_time'
+  orderType.value = 'desc'
   currentPage.value = 1
   fetchMembers()
 }
@@ -205,6 +205,11 @@ const handleChargeBtn = (id) => {
   currentMemberId.value = id
   showRechargeDialog.value = true
 }
+
+// 页面加载时自动请求一次数据
+onMounted(() => {
+  fetchMembers()
+})
 </script>
 
 <template>
@@ -259,7 +264,11 @@ const handleChargeBtn = (id) => {
         sortable="custom"
         :sort-orders="['ascending', 'descending']"
         width="160"
-      />
+      >
+        <template #default="{ row }">
+          {{ row.createdTime ? row.createdTime.replace('T', ' ') : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="name"
         label="姓名"

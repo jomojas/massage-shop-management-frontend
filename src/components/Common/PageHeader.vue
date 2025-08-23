@@ -102,6 +102,7 @@ const current = computed(() => {
       margin: 0 20px 0 20px;
       background-color: var(--header-menu-bg);
       color: var(--header-menu-text);
+      transition: background-color 0s ease;
 
       &:hover {
         background-color: var(--header-menu-hover-bg);
@@ -124,6 +125,7 @@ const current = computed(() => {
       // 内部元素需要 :deep()，因为它们没有 scoped 属性
       :deep(.el-breadcrumb__inner) {
         color: var(--header-text) !important;
+        transition: color 0s ease;
 
         &:hover {
           color: var(--color-primary) !important;
