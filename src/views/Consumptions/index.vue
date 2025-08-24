@@ -1,12 +1,17 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { fetchConsumptions, addConsumption } from '@/api/modules/consumption'
+import { fetchConsumptions, addConsumption, updateConsumption } from '@/api/modules/consumption'
 import ConsumptionFilterDialog from './components/ConsumptionFilterDialog.vue'
-import ConsumptionDialog from './components/ConsumptionDialog.vue'
+import AddConsumptionDialog from './components/AddConsumptionDialog.vue'
+import EditConsumptionDialog from './components/EditConsumptionDialog.vue'
+import { editCharge } from '@/api/modules/member'
 
 const showFilterDialog = ref(false)
-const showAddEditDialog = ref(false)
+// const showAddEditDialog = ref(false)
+// const dialogMode = ref('add') // 'add' or 'edit'
+const showAddDialog = ref(false)
+const showEditDialog = ref(false)
 
 const tableData = ref([])
 const total = ref(0)
@@ -75,23 +80,32 @@ const handlePageChange = (page) => {
   currentPage.value = page
   fetchList()
 }
+
+// 新增
 const handleAdd = () => {
-  showAddEditDialog.value = true
+  showAddDialog.value = true
 }
+// 编辑
 const handleEdit = (row) => {
-  currentEditRecord.value = row
-  // console.log('编辑记录', row)
-  showAddEditDialog.value = true
+  currentEditRecord.value = { ...row }
+  showEditDialog.value = true
 }
 
 // 添加消费记录回调函数
-const handleSubmit = async (submitData) => {
-  try {
-    await addConsumption(submitData)
-    ElMessage.success('新增消费记录成功')
+const handleAddSubmit = async (submitData) => {
+  const res = await addConsumption(submitData)
+  if (res === true || typeof res === 'string') {
+    ElMessage.success('添加成功')
     fetchList()
-  } catch (e) {
-    ElMessage.error('新增消费记录失败')
+  }
+}
+
+// 编辑消费记录回调函数
+const handleEditSubmit = async (submitData) => {
+  const res = await updateConsumption(currentEditRecord.value.recordId, submitData)
+  if (res === true || typeof res === 'string') {
+    ElMessage.success('编辑成功')
+    fetchList()
   }
 }
 
@@ -101,10 +115,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <ConsumptionDialog
-    v-model="showAddEditDialog"
+  <AddConsumptionDialog v-model="showAddDialog" @submit="handleAddSubmit" />
+  <EditConsumptionDialog
+    v-model="showEditDialog"
     :record="currentEditRecord"
-    @submit="handleSubmit"
+    @submit="handleEditSubmit"
   />
   <ConsumptionFilterDialog v-model="showFilterDialog" @search="handleFilterSearch" />
 
@@ -145,7 +160,7 @@ onMounted(() => {
         width="120"
       />
       <el-table-column prop="phone" label="电话" width="130" />
-      <el-table-column prop="description" label="客户描述" width="200" />
+      <el-table-column prop="description" label="客户描述" width="300" />
       <el-table-column
         prop="totalPrice"
         label="消费金额"
@@ -153,10 +168,10 @@ onMounted(() => {
         :sort-orders="['descending', 'ascending']"
         width="120"
       />
-      <el-table-column prop="recordDetail" label="消费明细" min-width="600" />
+      <el-table-column prop="recordDetail" label="消费明细" min-width="1000" />
       <el-table-column label="操作" width="100" fixed="right">
         <template #default="{ row }">
-          <el-button type="primary" link size="small" @click="handleEdit(row)">编辑</el-button>
+          <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -200,10 +215,10 @@ onMounted(() => {
 }
 .table-wrapper {
   position: relative;
-  height: 500px;
+  height: 450px;
   .el-table {
     width: 100%;
-    height: 450px;
+    height: 400px;
     background-color: var(--project-management-bg);
 
     :deep(.el-table__cell) {
