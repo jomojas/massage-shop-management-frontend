@@ -2,6 +2,7 @@ import axios from 'axios'
 import config from '@/config'
 import { ElMessage } from 'element-plus'
 import type { AxiosRequestConfig } from 'axios'
+import router from '@/router'
 
 const request = axios.create({
   baseURL: config.apiBaseUrl,
@@ -9,6 +10,7 @@ const request = axios.create({
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
   },
+  withCredentials: true, // 关键：让请求自动带上 cookie
 })
 
 // 请求拦截器
@@ -51,9 +53,9 @@ request.interceptors.response.use(
     const { code, data, message } = response.data
 
     // 开发环境打印响应信息
-    if (import.meta.env.DEV) {
-      // console.log('📥 收到响应:', response.config.url, response.data)
-    }
+    // if (import.meta.env.DEV) {
+    //   console.log('📥 收到响应:', response.config.url, response.data)
+    // }
 
     // 根据业务状态码判断
     if (code === 200 || code === 0) {
@@ -62,6 +64,12 @@ request.interceptors.response.use(
         return true // 或 return message
       }
       return data
+    } else if (code === 450) {
+      // 未登录或登录态失效，强制跳转登录页
+      // ElMessage.error(message || '登录已失效，请重新登录')
+      localStorage.removeItem('token')
+      router.push('/login') // 强制跳转登录页
+      return Promise.reject(new Error(message || '请重新登录'))
     } else {
       // 业务错误
       ElMessage.error(message || '请求失败')

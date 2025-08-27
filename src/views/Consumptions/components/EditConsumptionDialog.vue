@@ -72,20 +72,20 @@ const rules = {
 
 // 填充表单数据
 function fillFormFromRecord(val) {
-  console.log('fillFormFromRecord', cascaderOptions.value, val)
+  // console.log('fillFormFromRecord', cascaderOptions.value, val)
   if (val && Object.keys(val).length) {
-    console.log('val in fillFormFromRecord', val)
+    // console.log('val in fillFormFromRecord', val)
     // 1. 判断是否会员
     const isMember = !!(val.name || val.phone)
     addConsumptionForm.isMember = isMember
-    console.log('isMember', isMember)
+    // console.log('isMember', isMember)
 
     // 2. 会员信息
     addConsumptionForm.selectedMember = isMember ? { name: val.name, phone: val.phone } : {}
 
     // 3. 客户描述（仅普通客户用）
     addConsumptionForm.customerDesc = isMember ? '' : val.description || ''
-    console.log('customerDesc', addConsumptionForm.customerDesc)
+    // console.log('customerDesc', addConsumptionForm.customerDesc)
 
     // 4. 消费时间和备注
     addConsumptionForm.consumeTime = val.consumeTime || ''
@@ -144,7 +144,7 @@ function fillFormFromRecord(val) {
     addConsumptionForm.selectedCascader = cascaderArr
     addConsumptionForm.selectedList = listArr
 
-    console.log('最终填充表单数据addConsumption', addConsumptionForm)
+    // console.log('最终填充表单数据addConsumption', addConsumptionForm)
   } else {
     resetForm()
   }
@@ -281,7 +281,7 @@ const onConfirm = () => {
         ],
       })),
     }
-    console.log('提交数据', submitData)
+    // console.log('提交数据', submitData)
 
     emit('submit', submitData)
     resetForm()

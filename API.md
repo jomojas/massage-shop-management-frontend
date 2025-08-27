@@ -1,3 +1,133 @@
+# 用户登录
+
+## 账号密码登录
+
+-url: <mark>POST /api/login/account
+
+- 请求参数:
+
+```json
+{
+  "username": "admin",
+  "password": "admin123"
+}
+```
+
+- 响应实例:
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "token": "a55afa29b71146049e5a028eee5ef0fd"
+  }
+}
+```
+
+```json
+{
+  "code": 401,
+  "message": "密码错误",
+  "data": null
+}
+```
+
+## 生成图片验证码
+
+- url: <mark>GET /api/login/captcha
+- 请求参数:
+
+```json
+{
+  "phone": "13812345678"
+}
+```
+
+## 发送验证码
+
+- url: <mark>POST /api/login/send-code
+- 请求参数：
+
+```json
+{
+  "phone": "13812345678",
+  "captcha": "abcd"
+}
+```
+
+- 响应实例：
+
+```json
+{
+  "code": 200,
+  "message": "success"
+}
+```
+
+## 验证码登录
+
+- url: <mark>POST /api/login/phone
+- 请求参数：
+
+```json
+{
+  "phone": "13812345678",
+  "code": "123456"
+}
+```
+
+- 响应实例：
+
+````json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "token": "sidsbfisdbis"
+  }
+}
+
+```json
+{
+  "code": 401,
+  "message": "验证码错误或已失效"
+}
+```
+# 账号管理模块
+
+## 退出登录
+- url: <mark>POST /api/account/logout
+- 响应实例：
+```json
+{
+    "code": 200,
+    "message": "success",
+    "data": "退出登录成功"
+}
+```
+
+## 修改密码
+- url: <mark>POST /api/account/change-password
+- 请求参数：
+
+```json
+{
+  "oldPassword": "old123",
+  "newPassword": "new123"
+}
+```
+
+- 响应实例：
+
+```json
+{
+    "code": 200,
+    "message": "success",
+    "data": "密码修改成功"
+}
+```
+
 # 会员管理模块
 
 ## 会员查询（默认查询未删除会员）
@@ -39,7 +169,7 @@
     ]
   }
 }
-```
+````
 
 ## 查询已删除会员
 

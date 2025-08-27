@@ -2,68 +2,70 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
+  // 登录页单独路由
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/Login/index.vue'),
+    meta: { requiresAuth: false },
+  },
+  // 主应用布局
   {
     path: '/',
-    redirect: '/dashboard',
-  },
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: () => import('@/views/Dashboard/index.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/members',
-    name: 'Members',
-    component: () => import('@/views/Members/index.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/staff',
-    name: 'Staff',
-    component: () => import('@/views/Staffs/index.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/projects',
-    name: 'Projects',
-    component: () => import('@/views/Projects/index.vue'),
-    meta: { requiresAuth: true },
-  },
-  // 业务管理 - 嵌套路由
-  {
-    path: '/business',
-    name: 'business',
+    component: () => import('@/components/Layout/MainLayout.vue'),
     meta: { requiresAuth: true },
     children: [
       {
-        path: 'consumption',
+        path: '',
+        redirect: '/dashboard',
+      },
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/Dashboard/index.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'members',
+        name: 'Members',
+        component: () => import('@/views/Members/index.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'staff',
+        name: 'Staff',
+        component: () => import('@/views/Staffs/index.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'projects',
+        name: 'Projects',
+        component: () => import('@/views/Projects/index.vue'),
+        meta: { requiresAuth: true },
+      },
+      // 业务管理
+      {
+        path: 'business/consumption',
         name: 'consumption',
         component: () => import('@/views/Consumptions/index.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'expenses',
+        path: 'business/expenses',
         name: 'expenses',
         component: () => import('@/views/Expenses/index.vue'),
         meta: { requiresAuth: true },
       },
-    ],
-  },
-  // 系统管理 - 嵌套路由
-  {
-    path: '/system',
-    name: 'system',
-    meta: { requiresAuth: true },
-    children: [
+      // 系统管理
       {
-        path: 'logs',
+        path: 'system/logs',
         name: 'logs',
         component: () => import('@/views/Logs/index.vue'),
         meta: { requiresAuth: true },
       },
     ],
   },
+  // 404
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
@@ -76,23 +78,23 @@ const router = createRouter({
   routes,
 })
 
-// // 路由守卫
-// router.beforeEach((to, from, next) => {
-//   const token = localStorage.getItem('token')
-
-//   // 需要登录但没有token
-//   if (to.meta.requiresAuth && !token) {
-//     next('/login')
-//     return
-//   }
-
-//   // 已登录访问登录页，重定向到首页
-//   if (to.path === '/login' && token) {
-//     next('/dashboard')
-//     return
-//   }
-
-//   next()
-// })
+// 全局前置守卫
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  if (to.meta.requiresAuth) {
+    if (token) {
+      next()
+    } else {
+      next({ path: '/login' })
+    }
+  } else {
+    // 已登录访问登录页时自动跳转到首页
+    if (to.path === '/login' && token) {
+      next({ path: '/dashboard' })
+    } else {
+      next()
+    }
+  }
+})
 
 export default router
