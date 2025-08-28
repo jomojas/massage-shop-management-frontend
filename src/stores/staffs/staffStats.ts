@@ -77,7 +77,7 @@ export const useStaffStatsStore = defineStore('staffStats', () => {
       chartData.value = res.source || []
       // console.log('员工收入趋势数据:', chartData.value)
       incomeData.value = calcIncomeData(chartData.value)
-      console.log('incomeData:', incomeData.value)
+      // console.log('incomeData:', incomeData.value)
     } catch (err) {
       error.value = err
       console.error('获取员工收入趋势失败:', err)
