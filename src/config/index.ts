@@ -5,10 +5,7 @@ interface Config {
 }
 
 const config: Config = {
-  // 从环境变量读取 API 地址
-  apiBaseUrl:
-    import.meta.env.VITE_API_BASE_URL ||
-    (import.meta.env.DEV ? '/api' : 'http://localhost:8080/api'),
+  apiBaseUrl: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 15000,
   env: import.meta.env.VITE_APP_ENV || 'development',
 }
