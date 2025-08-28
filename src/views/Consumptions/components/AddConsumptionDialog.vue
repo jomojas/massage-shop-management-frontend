@@ -35,6 +35,38 @@ const totalPrice = computed(() =>
   addConsumptionForm.selectedList.reduce((sum, item) => sum + (Number(item.price) || 0), 0),
 )
 
+// 普通顾客描述推荐
+const customerDescSuggestions = [
+  '附近村居民',
+  '附近小区居民',
+  '开发区工厂工人',
+  '开发区商户老板',
+  '外地务工人员',
+  '外地来打工',
+  '附近做生意的老板',
+  '学生',
+  '家庭主妇',
+  '退休老人',
+  '男性年轻人',
+  '女性年轻人',
+  '男性中年人',
+  '女性中年人',
+  '男性老年人',
+  '女性老年人',
+  '第一次来店',
+  '回头客',
+  '朋友推荐',
+  '附近朋友介绍',
+  '身体不适主动上门',
+]
+
+const queryCustomerDesc = (queryString, cb) => {
+  const results = customerDescSuggestions
+    .filter((item) => item.includes(queryString))
+    .map((item) => ({ value: item }))
+  cb(results)
+}
+
 const rules = {
   // 客户类型相关校验
   selectedMember: [
@@ -270,7 +302,13 @@ onMounted(async () => {
 
       <!-- 普通客户描述 -->
       <el-form-item v-else label="客户描述" prop="customerDesc">
-        <el-input v-model="addConsumptionForm.customerDesc" placeholder="请输入客户描述" />
+        <el-autocomplete
+          v-model="addConsumptionForm.customerDesc"
+          :fetch-suggestions="queryCustomerDesc"
+          placeholder="请输入客户描述"
+          :trigger-on-focus="true"
+          clearable
+        />
       </el-form-item>
 
       <!-- 项目-员工选择 -->

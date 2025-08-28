@@ -62,7 +62,12 @@ const handleMenu = (item: MenuItem) => {
   >
     <!-- Logo 区域 -->
     <div class="logo-container">
-      <h3 class="logo-title">{{ actualCollapse ? '加德' : '加德盲人推拿' }}</h3>
+      <template v-if="actualCollapse">
+        <img src="/images/logo.svg" alt="logo" class="logo-img" />
+      </template>
+      <template v-else>
+        <h3 class="logo-title">加德盲人推拿</h3>
+      </template>
     </div>
 
     <!-- 菜单区域 -->
@@ -145,6 +150,13 @@ const handleMenu = (item: MenuItem) => {
     align-items: center;
     justify-content: center;
     height: 60px;
+
+    .logo-img {
+      width: 32px;
+      height: 32px;
+      display: block;
+      object-fit: contain;
+    }
 
     .logo-title {
       color: var(--text-primary);
