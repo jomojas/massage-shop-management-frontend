@@ -2,7 +2,7 @@
 import { ref, reactive, watch, nextTick } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { loginByAccount, loginByPhone, getCaptcha, sendPhoneCode } from '@/api/modules/Login'
+import { loginByAccount, loginByPhone, getCaptcha, sendPhoneCode } from '@/api/modules/login'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
