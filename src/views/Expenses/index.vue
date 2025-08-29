@@ -56,7 +56,7 @@ const fetchExpenseList = async () => {
   } else {
     res = await fetchDeletedExpenses(params)
   }
-  console.log('Fetched expenses:', res)
+  // console.log('Fetched expenses:', res)
   const data = res.data || res
 
   tableData.value = data.records
