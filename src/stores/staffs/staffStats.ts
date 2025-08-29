@@ -30,7 +30,26 @@ export const useStaffStatsStore = defineStore('staffStats', () => {
   // 根据timeRange的员工总带来收益数据
   const incomeData = ref({})
 
-  // 方法
+  const pollingTimer = ref<ReturnType<typeof setInterval> | null>(null)
+
+  // Actions
+  const startPolling = () => {
+    stopPolling() // 避免重复定时
+    pollingTimer.value = setInterval(
+      () => {
+        fetchAllData()
+      },
+      10 * 60 * 1000,
+    ) // 10分钟
+  }
+
+  const stopPolling = () => {
+    if (pollingTimer.value) {
+      clearInterval(pollingTimer.value)
+      pollingTimer.value = null
+    }
+  }
+
   const setTimeRange = (range: string) => {
     timeRange.value = range
     fetchAllData()
@@ -93,5 +112,7 @@ export const useStaffStatsStore = defineStore('staffStats', () => {
     incomeData,
     setTimeRange,
     fetchAllData,
+    startPolling,
+    stopPolling,
   }
 })

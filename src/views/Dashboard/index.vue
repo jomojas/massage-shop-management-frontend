@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onActivated } from 'vue'
+import { onMounted, onActivated, onUnmounted } from 'vue'
 import ConsumePie from './components/ConsumePie.vue'
 import LineChart from './components/LineChart.vue'
 import ProjectPie from './components/ProjectPie.vue'
@@ -10,9 +10,10 @@ import { useDashboardStore } from '@/stores/dashboard'
 const dashboardStore = useDashboardStore()
 onMounted(() => {
   dashboardStore.fetchAllData() // 初始加载数据
+  dashboardStore.startPolling()
 })
-onActivated(() => {
-  dashboardStore.fetchAllData()
+onUnmounted(() => {
+  dashboardStore.stopPolling()
 })
 </script>
 

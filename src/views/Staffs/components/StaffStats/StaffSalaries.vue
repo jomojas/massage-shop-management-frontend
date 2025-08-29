@@ -27,10 +27,10 @@ const staffSalaries = computed(() => staffStatsStore.staffSalaries)
 // console.log('StaffSalaries in StaffSalaries.vue:', staffSalaries.value)
 
 // 组件挂载时获取数据，组件挂载完成后再执行
-onMounted(() => {
-  staffStatsStore.fetchAllData()
-  // console.log('StaffSalaries in StaffSalaries.vue mounted onMounted:', staffSalaries.value)
-})
+// onMounted(() => {
+//   staffStatsStore.fetchAllData()
+//   // console.log('StaffSalaries in StaffSalaries.vue mounted onMounted:', staffSalaries.value)
+// })
 </script>
 
 <template>

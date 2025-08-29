@@ -30,7 +30,26 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const consumeData = ref<{ name: string; value: number }[]>([])
   const projectData = ref<{ name: string; value: number }[]>([])
 
+  const pollingTimer = ref<ReturnType<typeof setInterval> | null>(null)
+
   // Actions
+  const startPolling = () => {
+    stopPolling() // 避免重复定时
+    pollingTimer.value = setInterval(
+      () => {
+        fetchAllData()
+      },
+      10 * 60 * 1000,
+    ) // 10分钟
+  }
+
+  const stopPolling = () => {
+    if (pollingTimer.value) {
+      clearInterval(pollingTimer.value)
+      pollingTimer.value = null
+    }
+  }
+
   const setTimeRange = async (range: string) => {
     timeRange.value = range
     await fetchAllData()
@@ -96,5 +115,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
     projectData,
     setTimeRange,
     fetchAllData,
+    startPolling,
+    stopPolling,
   }
 })

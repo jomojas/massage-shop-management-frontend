@@ -141,9 +141,9 @@ watch(source, (val) => {
   }
 })
 
-onMounted(async () => {
-  staffStatsStore.fetchAllData()
-})
+// onMounted(async () => {
+//   staffStatsStore.fetchAllData()
+// })
 </script>
 
 <template>

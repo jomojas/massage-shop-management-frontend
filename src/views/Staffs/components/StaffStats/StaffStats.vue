@@ -2,6 +2,17 @@
 import TimeSelector from './TimeSelector.vue'
 import StaffSalaries from './StaffSalaries.vue'
 import Charts from './Charts.vue'
+import { useStaffStatsStore } from '@/stores/staffs/staffStats'
+import { onMounted, onUnmounted } from 'vue'
+
+const staffStatsStore = useStaffStatsStore()
+onMounted(() => {
+  staffStatsStore.fetchAllData() // 初始加载数据
+  staffStatsStore.startPolling()
+})
+onUnmounted(() => {
+  staffStatsStore.stopPolling()
+})
 </script>
 
 <template>
