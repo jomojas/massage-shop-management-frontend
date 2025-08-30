@@ -5,7 +5,7 @@ import EditMemberDialog from './EditMemberDialog.vue'
 import MemberFilter from './MemberFilter.vue'
 import RechargeDialog from './RechargeDialog.vue'
 import MemberTimeLine from './MemberTimeLine.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 import {
   fetchUndeletedMembers,
   fetchDeletedMembers,
@@ -210,6 +210,8 @@ const handleChargeBtn = (id) => {
 onMounted(() => {
   fetchMembers()
 })
+
+const isMobile = inject('isMobile', false)
 </script>
 
 <template>
@@ -258,7 +260,6 @@ onMounted(() => {
       @row-click="handleRowClick"
     >
       <el-table-column
-        fixed
         prop="createdTime"
         label="创建时间"
         sortable="custom"
@@ -285,7 +286,7 @@ onMounted(() => {
         width="120"
       />
       <el-table-column prop="description" label="描述信息" width="400" />
-      <el-table-column fixed="right" label="操作" min-width="230">
+      <el-table-column fixed="right" label="操作" :width="isMobile ? '150' : '200'">
         <template #default="{ row }">
           <template v-if="memberStatus === 'undeleted'">
             <el-button type="danger" link @click.stop="handleDeleteBtn(row.id)">删除</el-button>

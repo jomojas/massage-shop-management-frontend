@@ -216,7 +216,7 @@ onMounted(() => {
       <el-table-column prop="phone" label="电话" width="120" />
       <el-table-column prop="status" label="状态" width="100" />
       <el-table-column prop="remark" label="备注" min-width="200" />
-      <el-table-column label="操作" fixed="right" width="150">
+      <el-table-column label="操作" fixed="right" width="120">
         <template #default="{ row }">
           <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
         </template>

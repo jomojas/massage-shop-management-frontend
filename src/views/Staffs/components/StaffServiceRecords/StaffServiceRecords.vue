@@ -123,7 +123,7 @@ onMounted(() => {
         label="服务时间"
         sortable="custom"
         :sort-orders="['ascending', 'descending']"
-        width="180"
+        width="160"
       >
         <template #default="{ row }">
           {{ row.serviceTime ? row.serviceTime.replace('T', ' ') : '-' }}

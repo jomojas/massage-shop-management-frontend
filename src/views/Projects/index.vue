@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
 import {
@@ -193,6 +193,8 @@ onMounted(() => {
   getCategories()
   fetchProjectList()
 })
+
+const isMobile = inject('isMobile', false)
 </script>
 
 <template>
@@ -242,7 +244,7 @@ onMounted(() => {
 
   <div class="table-wrapper">
     <el-table :data="tableData" style="width: 100%" @sort-change="handleSortChange">
-      <el-table-column prop="createdTime" fixed label="创建时间" width="160">
+      <el-table-column prop="createdTime" label="创建时间" width="160">
         <template #default="{ row }">
           {{ row.createdTime ? row.createdTime.replace('T', ' ') : '-' }}
         </template>
@@ -275,7 +277,7 @@ onMounted(() => {
           {{ row.updatedTime ? row.updatedTime.replace('T', ' ') : '-' }}
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" min-width="180">
+      <el-table-column fixed="right" label="操作" :width="isMobile ? '120' : '150'">
         <template #default="{ row }">
           <template v-if="projectStatus === 'undeleted'">
             <el-button type="danger" link @click.stop="handleDeleteBtn(row.id)">删除</el-button>

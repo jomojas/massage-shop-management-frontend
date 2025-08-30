@@ -28,14 +28,14 @@ request.interceptors.request.use(
     }
 
     // 3. 开发环境打印请求信息
-    // if (import.meta.env.DEV) {
-    //   console.log(
-    //     '📤 发送请求:',
-    //     config.method?.toUpperCase(),
-    //     config.url,
-    //     config.data || config.params,
-    //   )
-    // }
+    if (import.meta.env.DEV) {
+      console.log(
+        '📤 发送请求:',
+        config.method?.toUpperCase(),
+        config.url,
+        config.data || config.params,
+      )
+    }
 
     return config
   },

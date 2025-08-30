@@ -57,7 +57,7 @@ const isMobile = inject('isMobile', false)
     <div
       class="member-timeline"
       :class="{ 'slide-in': showPanel, 'slide-out': !showPanel }"
-      :style="{ width: isMobile ? '50%' : '30%' }"
+      :style="{ width: isMobile ? '70%' : '30%' }"
     >
       <h3 style="margin-bottom: 16px">会员姓名: {{ memberName }}</h3>
       <el-timeline style="max-width: 600px">

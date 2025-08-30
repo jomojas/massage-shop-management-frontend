@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
 import AddStaffDialog from './AddStaffDialog.vue'
@@ -187,6 +187,8 @@ const handleFilterDialog = () => {
 onMounted(() => {
   fetchStaffs()
 })
+
+const isMobile = inject('isMobile', false)
 </script>
 
 <template>
@@ -234,7 +236,7 @@ onMounted(() => {
       @sort-change="handleSortChange"
       @row-click="handleRowClick"
     >
-      <el-table-column fixed prop="createTime" label="创建时间" width="160">
+      <el-table-column prop="createTime" label="创建时间" width="160">
         <template #default="{ row }">
           {{ row.createTime ? row.createTime.replace('T', ' ') : '-' }}
         </template>
@@ -255,7 +257,7 @@ onMounted(() => {
         width="120"
         :formatter="(row) => (row.commission * 100).toFixed(2) + '%'"
       />
-      <el-table-column fixed="right" label="操作" min-width="200">
+      <el-table-column fixed="right" label="操作" :width="isMobile ? '120' : '180'">
         <template #default="{ row }">
           <template v-if="staffStatus === 'undeleted'">
             <el-button type="danger" link @click.stop="handleDeleteBtn(row.id)">删除</el-button>

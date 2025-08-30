@@ -145,7 +145,6 @@ onMounted(() => {
   <div class="table-wrapper">
     <el-table :data="tableData" style="width: 100%" @sort-change="handleSortChange">
       <el-table-column
-        fixed
         prop="rechargeTime"
         label="充值时间"
         sortable="custom"
@@ -172,7 +171,7 @@ onMounted(() => {
         width="120"
       />
       <el-table-column prop="remark" label="描述信息" width="400" />
-      <el-table-column fixed="right" label="操作" min-width="150">
+      <el-table-column fixed="right" label="操作" min-width="100">
         <template #default="{ row }">
           <el-button type="primary" link @click="handleEditBtn(row)">编辑</el-button>
         </template>

@@ -143,7 +143,6 @@ onMounted(() => {
       <el-table-column
         prop="consumeTime"
         label="消费时间"
-        fixed
         sortable="custom"
         :sort-orders="['descending', 'ascending']"
         width="180"

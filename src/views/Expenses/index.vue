@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   fetchExpenses,
@@ -178,6 +178,8 @@ onMounted(() => {
   getCategories()
   fetchExpenseList()
 })
+
+const isMobile = inject('isMobile', false)
 </script>
 
 <template>
@@ -228,7 +230,6 @@ onMounted(() => {
       <el-table-column
         prop="spendDate"
         label="支出日期"
-        fixed
         sortable="custom"
         :sort-orders="['ascending', 'descending']"
         width="120"
@@ -252,7 +253,7 @@ onMounted(() => {
           {{ row.updateTime ? row.updateTime.replace('T', ' ') : '-' }}
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" min-width="180">
+      <el-table-column fixed="right" label="操作" :width="isMobile ? '120' : '150'">
         <template #default="{ row }">
           <template v-if="expenseStatus === 'undeleted'">
             <el-button type="danger" link @click.stop="handleDeleteBtn(row.id)">删除</el-button>
